@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="vi" class="h-full">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" class="h-full">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-    <title>mở lời. - AI Real-World English Simulator</title>
+    <title>{{ __('landing.page_title') }}</title>
 
     <!-- Favicon -->
     <link rel="icon" type="image/svg+xml" href="/favicon.svg">
@@ -30,9 +30,9 @@
            @click.prevent="scrollTo('#chuong-1')"
            :class="activeChapter === 1 ? 'nav-dot-active' : 'w-2.5 bg-stone-300 hover:bg-stone-400'"
            class="h-2.5 rounded-full transition-all duration-300 relative group flex items-center justify-end"
-           title="01 Nỗi sợ đời thực">
+           title="{{ __('landing.hud.chapter_1_title') }}">
             <span class="absolute right-8 px-2.5 py-1 rounded-lg bg-pine text-white text-[11px] font-semibold whitespace-nowrap opacity-0 group-hover:opacity-100 transition shadow-md pointer-events-none">
-                01. Khoảnh khắc đông cứng
+                {{ __('landing.hud.chapter_1_label') }}
             </span>
         </a>
 
@@ -40,9 +40,9 @@
            @click.prevent="scrollTo('#chuong-2')"
            :class="activeChapter === 2 ? 'nav-dot-active' : 'w-2.5 bg-stone-300 hover:bg-stone-400'"
            class="h-2.5 rounded-full transition-all duration-300 relative group flex items-center justify-end"
-           title="02 Trải nghiệm mô phỏng">
+           title="{{ __('landing.hud.chapter_2_title') }}">
             <span class="absolute right-8 px-2.5 py-1 rounded-lg bg-pine text-white text-[11px] font-semibold whitespace-nowrap opacity-0 group-hover:opacity-100 transition shadow-md pointer-events-none">
-                02. Màn hình giả lập Living Simulator
+                {{ __('landing.hud.chapter_2_label') }}
             </span>
         </a>
 
@@ -50,9 +50,9 @@
            @click.prevent="scrollTo('#chuong-3')"
            :class="activeChapter === 3 ? 'nav-dot-active' : 'w-2.5 bg-stone-300 hover:bg-stone-400'"
            class="h-2.5 rounded-full transition-all duration-300 relative group flex items-center justify-end"
-           title="03 Triết lý CSI">
+           title="{{ __('landing.hud.chapter_3_title') }}">
             <span class="absolute right-8 px-2.5 py-1 rounded-lg bg-pine text-white text-[11px] font-semibold whitespace-nowrap opacity-0 group-hover:opacity-100 transition shadow-md pointer-events-none">
-                03. Thước đo thấu cảm CSI
+                {{ __('landing.hud.chapter_3_label') }}
             </span>
         </a>
 
@@ -60,9 +60,9 @@
            @click.prevent="scrollTo('#chuong-4')"
            :class="activeChapter === 4 ? 'nav-dot-active' : 'w-2.5 bg-stone-300 hover:bg-stone-400'"
            class="h-2.5 rounded-full transition-all duration-300 relative group flex items-center justify-end"
-           title="04 Mở lời thử ngay">
+           title="{{ __('landing.hud.chapter_4_title') }}">
             <span class="absolute right-8 px-2.5 py-1 rounded-lg bg-pine text-white text-[11px] font-semibold whitespace-nowrap opacity-0 group-hover:opacity-100 transition shadow-md pointer-events-none">
-                04. Mở lời thử ngay (Micro-Voice)
+                {{ __('landing.hud.chapter_4_label') }}
             </span>
         </a>
     </aside>
@@ -76,31 +76,31 @@
                 <span class="w-9 h-9 rounded-xl bg-sage-primary text-white flex items-center justify-center shadow-soft-sm group-hover:scale-105 transition duration-200">
                     <span class="material-symbols-outlined text-[20px]">graphic_eq</span>
                 </span>
-                <span class="font-bold text-xl text-pine tracking-tight">mở lời.</span>
+                <span class="font-bold text-xl text-pine tracking-tight">{{ __('common.brand') }}</span>
             </a>
 
             <nav class="hidden md:flex items-center gap-7 text-xs font-semibold text-pine-subtle">
-                <a href="#chuong-1" @click.prevent="scrollTo('#chuong-1')" class="hover:text-sage-primary transition">1. Nỗi sợ đời thực</a>
-                <a href="#chuong-2" @click.prevent="scrollTo('#chuong-2')" class="hover:text-sage-primary transition">2. Trải nghiệm mô phỏng</a>
-                <a href="#chuong-3" @click.prevent="scrollTo('#chuong-3')" class="hover:text-sage-primary transition">3. Triết lý CSI</a>
-                <a href="#chuong-4" @click.prevent="scrollTo('#chuong-4')" class="hover:text-sage-primary transition">4. Mở lời thử ngay</a>
+                <a href="#chuong-1" @click.prevent="scrollTo('#chuong-1')" class="hover:text-sage-primary transition">{{ __('landing.nav.chapter_1') }}</a>
+                <a href="#chuong-2" @click.prevent="scrollTo('#chuong-2')" class="hover:text-sage-primary transition">{{ __('landing.nav.chapter_2') }}</a>
+                <a href="#chuong-3" @click.prevent="scrollTo('#chuong-3')" class="hover:text-sage-primary transition">{{ __('landing.nav.chapter_3') }}</a>
+                <a href="#chuong-4" @click.prevent="scrollTo('#chuong-4')" class="hover:text-sage-primary transition">{{ __('landing.nav.chapter_4') }}</a>
             </nav>
 
             <div class="flex items-center gap-3">
                 @auth
                     <a href="{{ Route::has('scenarios.index') ? route('scenarios.index') : '/practice' }}"
                        class="btn-compact">
-                        <span>Vào phòng học</span>
+                        <span>{{ __('common.buttons.enter_workspace') }}</span>
                         <span class="material-symbols-outlined text-[16px]">arrow_forward</span>
                     </a>
                 @else
                     <a href="{{ Route::has('login') ? route('login') : '/login' }}"
                        class="hidden sm:inline-block text-xs font-semibold text-pine hover:text-sage-primary transition px-3 py-2">
-                        Đăng nhập
+                        {{ __('common.buttons.login') }}
                     </a>
                     <a href="{{ Route::has('scenarios.index') ? route('scenarios.index') : '/practice' }}"
                        class="btn-compact">
-                        <span>Vào luyện tập</span>
+                        <span>{{ __('common.buttons.start_practice') }}</span>
                         <span class="material-symbols-outlined text-[16px]">arrow_forward</span>
                     </a>
                 @endauth
@@ -110,6 +110,7 @@
 
     <!-- ============================================================ -->
     <!-- CHƯƠNG 1: THE FREEZE & HOOK (Background Đa Tầng Warm Humanist) -->
+    <!-- Container Chuẩn 6xl Khóa Trục Dọc                            -->
     <!-- ============================================================ -->
     <section id="chuong-1" class="section-py relative overflow-hidden border-b border-warm-border bg-gradient-to-b from-[#F7F3ED] via-warm-50 to-warm-50">
         <!-- Lớp phủ lưới chấm tinh tế -->
@@ -125,12 +126,12 @@
             <!-- 2 Sticker Thoại Lơ Lửng Tinh Tế Trên Desktop (xl) -->
             <div class="hidden xl:flex items-center gap-2.5 absolute left-2 lg:left-4 top-1/2 -translate-y-12 bg-white/95 backdrop-blur-md border border-amber-200/90 px-4 py-2.5 rounded-2xl shadow-soft text-xs text-pine font-medium transform -rotate-3 hover:rotate-0 transition duration-300 pointer-events-none z-20">
                 <span class="w-2.5 h-2.5 rounded-full bg-amber-500 animate-pulse"></span>
-                <span>&ldquo;Could I get a flat white with...&rdquo;</span>
+                <span>{{ __('landing.chapter_1.sticker_left') }}</span>
             </div>
 
             <div class="hidden xl:flex items-center gap-2.5 absolute right-2 lg:right-4 top-1/2 -translate-y-4 bg-white/95 backdrop-blur-md border border-emerald-200/90 px-4 py-2.5 rounded-2xl shadow-soft text-xs text-pine font-medium transform rotate-3 hover:rotate-0 transition duration-300 pointer-events-none z-20">
                 <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
-                <span class="text-sage-primary font-semibold">&ldquo;Take your time, no rush!&rdquo;</span>
+                <span class="text-sage-primary font-semibold">{{ __('landing.chapter_1.sticker_right') }}</span>
             </div>
 
             <!-- Centered Story Hook -->
@@ -138,27 +139,27 @@
                 <!-- Eyebrow Pill -->
                 <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white border border-sage-border-light shadow-soft-sm mb-5 hero-stagger">
                     <span class="w-2 h-2 rounded-full bg-terracotta animate-pulse"></span>
-                    <span class="text-caption uppercase text-terracotta font-bold">AI REAL-WORLD ENGLISH SIMULATOR</span>
+                    <span class="text-caption uppercase text-terracotta font-bold">{{ __('landing.chapter_1.eyebrow_badge') }}</span>
                     <span class="text-xs text-stone-300">&bull;</span>
-                    <span class="text-caption uppercase text-pine font-bold">Vượt qua nỗi sợ mở lời.</span>
+                    <span class="text-caption uppercase text-pine font-bold">{{ __('landing.chapter_1.eyebrow_text') }}</span>
                 </div>
 
                 <!-- Main Heading: .text-main (32px -> 40px -> 48px) -->
                 <h1 class="text-main mb-5 hero-stagger">
-                    Khoảnh khắc bạn muốn nói...<br class="hidden sm:inline">
-                    <span class="font-serif italic font-normal text-sage-primary">nhưng cổ họng bỗng nghẹn lại.</span>
+                    {{ __('landing.chapter_1.heading_line1') }}<br class="hidden sm:inline">
+                    <span class="font-serif italic font-normal text-sage-primary">{{ __('landing.chapter_1.heading_line2') }}</span>
                 </h1>
 
                 <!-- Subtitle: .text-sub (14px -> 16px chẵn) -->
                 <p class="text-sub text-pine-subtle font-medium max-w-2xl mx-auto mb-10 hero-stagger">
-                    Bạn đã làm bài tập ngữ pháp hàng năm trời. Nhưng khi đứng trước quầy cà phê ở Melbourne hay hải quan sân bay Tokyo, chỉ một câu hỏi bất ngờ cũng khiến não bộ rơi vào trạng thái <strong>&ldquo;đông cứng&rdquo;</strong>.
+                    {!! __('landing.chapter_1.subtitle') !!}
                 </p>
 
                 <!-- Conflict Box -->
                 <div id="freeze-card" class="max-w-2xl mx-auto bg-white rounded-card border border-warm-border p-6 sm:p-7 shadow-soft text-left relative transform transition hover:shadow-soft-lg duration-300">
                     <div class="absolute -top-3.5 left-6 px-3 py-0.5 rounded-full bg-amber-100 text-amber-900 border border-amber-200 text-[11px] font-bold tracking-wide flex items-center gap-1.5 shadow-xs">
                         <span class="w-2 h-2 rounded-full bg-amber-600 animate-ping"></span>
-                        <span>TÌNH HUỐNG THỰC TẾ &bull; KHOẢNH KHẮC 3 GIÂY ĐẦU</span>
+                        <span>{!! __('landing.chapter_1.scenario_badge') !!}</span>
                     </div>
 
                     <!-- Lời thoại đối tác -->
@@ -169,24 +170,24 @@
                         </div>
                         <div class="bg-sage-tint/90 border border-sage-border-light rounded-2xl rounded-tl-none p-3.5 text-xs sm:text-sm text-pine font-medium leading-relaxed shadow-soft-sm flex-1">
                             <div class="flex items-center justify-between mb-1">
-                                <span class="font-bold text-sage-primary text-[11px] uppercase tracking-wider">Barista Emma (Melbourne):</span>
-                                <span class="text-[10px] text-pine-muted font-mono">09:42 AM</span>
+                                <span class="font-bold text-sage-primary text-[11px] uppercase tracking-wider">{{ __('landing.chapter_1.bubble_ai_speaker') }}</span>
+                                <span class="text-[10px] text-pine-muted font-mono">{{ __('landing.chapter_1.bubble_ai_time') }}</span>
                             </div>
-                            &ldquo;Hi there! Sorry, we completely ran out of oat milk just now... Would you like soy or almond milk instead?&rdquo;
+                            {!! __('landing.chapter_1.bubble_ai_text') !!}
                         </div>
                     </div>
 
                     <!-- Độc thoại nội tâm -->
                     <div id="bubble-user" class="flex items-start gap-3.5 pl-6 sm:pl-10">
                         <div class="w-8 h-8 rounded-full bg-amber-100 border border-amber-200 flex items-center justify-center text-xs font-bold text-amber-900 shrink-0 shadow-xs">
-                            Bạn
+                            {{ __('landing.chapter_1.bubble_user_label') }}
                         </div>
                         <div class="bg-warm-50 border border-amber-200 rounded-2xl rounded-tl-none p-3.5 text-xs sm:text-sm text-stone-700 italic leading-relaxed flex-1 shadow-xs">
                             <div class="flex items-center gap-1.5 text-amber-800 font-semibold text-[11px] mb-1">
                                 <span class="material-symbols-outlined text-[16px] animate-pulse">psychology_alt</span>
-                                <span>Cơn bão suy nghĩ trong đầu:</span>
+                                <span>{{ __('landing.chapter_1.bubble_user_thought_header') }}</span>
                             </div>
-                            &ldquo;Ủa... oat milk hết thì mình đổi sang soy milk được không? Cấu trúc câu lịch sự là gì nhỉ? Nói sai thì nhân viên có nhăn mặt không... Thôi gật đầu đại cho xong...&rdquo;
+                            {!! __('landing.chapter_1.bubble_user_thought_text') !!}
                         </div>
                     </div>
 
@@ -194,10 +195,10 @@
                     <div class="mt-5 pt-3.5 border-t border-warm-border flex items-center justify-between text-xs text-pine-subtle">
                         <span class="flex items-center gap-1.5">
                             <span class="material-symbols-outlined text-terracotta text-[18px]">sentiment_dissatisfied</span>
-                            <span>Nguyên nhân: <strong>Nỗi sợ phán xét</strong>, không phải do thiếu từ vựng.</span>
+                            <span>{!! __('landing.chapter_1.cause_text') !!}</span>
                         </span>
                         <button type="button" @click="scrollTo('#chuong-2')" class="font-bold text-sage-primary hover:underline flex items-center gap-1">
-                            <span>Xem giải pháp</span>
+                            <span>{{ __('landing.chapter_1.view_solution') }}</span>
                             <span class="material-symbols-outlined text-[16px]">arrow_downward</span>
                         </button>
                     </div>
@@ -219,13 +220,13 @@
 
             <!-- Section Header: .text-title & .text-sub -->
             <div class="text-center max-w-2xl mx-auto mb-10" id="sim-section-header">
-                <span class="text-caption uppercase text-sage-primary font-bold block mb-1.5">KHÔNG GIAN GIẢ LẬP ĐỜI THỰC &bull; 0% PHÁN XÉT</span>
+                <span class="text-caption uppercase text-sage-primary font-bold block mb-1.5">{!! __('landing.chapter_2.eyebrow') !!}</span>
                 <h2 class="text-title">
-                    Mô phỏng 1 cuộc gọi video thật.<br class="hidden sm:inline">
-                    Nơi bạn được phép sai và nói lại.
+                    {{ __('landing.chapter_2.heading_line1') }}<br class="hidden sm:inline">
+                    {{ __('landing.chapter_2.heading_line2') }}
                 </h2>
                 <p class="text-sub text-pine-subtle mt-2.5">
-                    Không bài tập điền từ. Bạn đối thoại trực diện 1-1 với AI trong giao diện Video Call chân thật, có phao cứu sinh giàn giáo và không gian suy nghĩ thư thái.
+                    {{ __('landing.chapter_2.subtitle') }}
                 </p>
             </div>
 
@@ -237,10 +238,10 @@
                     <div class="flex items-center gap-2 text-xs font-semibold text-pine">
                         <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-sage-tint text-sage-primary text-[11px] font-bold border border-sage-border-light shadow-xs">
                             <span class="w-2 h-2 rounded-full bg-sage-primary" :class="isPaused ? '' : 'animate-pulse'"></span>
-                            <span x-text="isPaused ? 'Tạm dừng (Rê chuột)' : 'Tự động chuyển sau 5s'"></span>
+                            <span x-text="isPaused ? '{{ __('landing.chapter_2.paused_hover') }}' : '{{ __('landing.chapter_2.auto_slide_5s') }}'"></span>
                         </span>
                         <span class="text-stone-300 hidden sm:inline">&bull;</span>
-                        <span class="text-pine-subtle text-[11px] hidden sm:inline">Bấm thẻ hoặc nút mũi tên để xem ngay</span>
+                        <span class="text-pine-subtle text-[11px] hidden sm:inline">{{ __('landing.chapter_2.click_hint') }}</span>
                     </div>
 
                     <!-- Compact Stepper Navigation -->
@@ -248,14 +249,14 @@
                         <button type="button"
                                 @click="prevStep()"
                                 class="w-8 h-8 rounded-xl bg-white border border-warm-border hover:bg-stone-50 flex items-center justify-center text-pine transition shadow-xs cursor-pointer"
-                                title="Bước trước">
+                                title="{{ __('landing.chapter_2.prev_step') }}">
                             <span class="material-symbols-outlined text-[18px]">chevron_left</span>
                         </button>
-                        <span class="text-xs font-bold text-pine min-w-[75px] text-center font-mono" x-text="`Bước ${currentStep} / 3`"></span>
+                        <span class="text-xs font-bold text-pine min-w-[75px] text-center font-mono" x-text="`{{ __('common.step_prefix') }} ${currentStep} / 3`"></span>
                         <button type="button"
                                 @click="nextStep()"
                                 class="w-8 h-8 rounded-xl bg-white border border-warm-border hover:bg-stone-50 flex items-center justify-center text-pine transition shadow-xs cursor-pointer"
-                                title="Bước tiếp theo">
+                                title="{{ __('landing.chapter_2.next_step') }}">
                             <span class="material-symbols-outlined text-[18px]">chevron_right</span>
                         </button>
                     </div>
@@ -270,13 +271,13 @@
                         <div>
                             <div class="flex items-center gap-2 mb-2">
                                 <span class="w-5 h-5 rounded-full bg-sage-primary text-white text-[11px] font-bold flex items-center justify-center shadow-xs">1</span>
-                                <span class="text-caption uppercase text-sage-primary font-bold">KHÔNG GIAN AN TOÀN</span>
+                                <span class="text-caption uppercase text-sage-primary font-bold">{{ __('landing.chapter_2.card_1.tag') }}</span>
                             </div>
                             <h3 class="text-title-sm text-sm sm:text-base font-bold text-pine mb-1.5">
-                                Đối tác kiên nhẫn &bull; 0% phán xét
+                                {!! __('landing.chapter_2.card_1.title') !!}
                             </h3>
                             <p class="text-xs text-pine-subtle leading-relaxed">
-                                Barista Emma mỉm cười, ngữ điệu tự nhiên và không bao giờ ngắt lời hay phán xét khi bạn ấp úng.
+                                {{ __('landing.chapter_2.card_1.desc') }}
                             </p>
                         </div>
                         <!-- Progress Countdown Bar under active card -->
@@ -293,13 +294,13 @@
                         <div>
                             <div class="flex items-center gap-2 mb-2">
                                 <span class="w-5 h-5 rounded-full bg-terracotta text-white text-[11px] font-bold flex items-center justify-center shadow-xs">2</span>
-                                <span class="text-caption uppercase text-terracotta font-bold">CHIẾC PHAO GIÀN GIÁO</span>
+                                <span class="text-caption uppercase text-terracotta font-bold">{{ __('landing.chapter_2.card_2.tag') }}</span>
                             </div>
                             <h3 class="text-title-sm text-sm sm:text-base font-bold text-pine mb-1.5">
-                                Đỡ lời tức thì khi gặp biến số
+                                {{ __('landing.chapter_2.card_2.title') }}
                             </h3>
                             <p class="text-xs text-pine-subtle leading-relaxed">
-                                Hết món hay đổi ý? Có sẵn ý định + khung câu rỗng + từ khóa then chốt [🔊] cứu nguy ngay.
+                                {{ __('landing.chapter_2.card_2.desc') }}
                             </p>
                         </div>
                         <!-- Progress Countdown Bar under active card -->
@@ -316,13 +317,13 @@
                         <div>
                             <div class="flex items-center gap-2 mb-2">
                                 <span class="w-5 h-5 rounded-full bg-emerald-600 text-white text-[11px] font-bold flex items-center justify-center shadow-xs">3</span>
-                                <span class="text-caption uppercase text-emerald-700 font-bold">10-15S SUY NGHĨ & NÓI LẠI</span>
+                                <span class="text-caption uppercase text-emerald-700 font-bold">{{ __('landing.chapter_2.card_3.tag') }}</span>
                             </div>
                             <h3 class="text-title-sm text-sm sm:text-base font-bold text-pine mb-1.5">
-                                Thư thái mở lời & Nút nói lại
+                                {{ __('landing.chapter_2.card_3.title') }}
                             </h3>
                             <p class="text-xs text-pine-subtle leading-relaxed">
-                                Không áp lực đếm ngược. Nếu lỡ nói vấp? Bấm nút [↺ Nói lại] xóa câu và đọc lại ngay lập tức.
+                                {{ __('landing.chapter_2.card_3.desc') }}
                             </p>
                         </div>
                         <!-- Progress Countdown Bar under active card -->
@@ -340,14 +341,14 @@
                     <div class="h-14 px-5 bg-slate-950/80 border-b border-slate-800 flex items-center justify-between">
                         <div class="flex items-center gap-2.5">
                             <span class="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-ping"></span>
-                            <span class="text-xs font-bold text-slate-200">Đang gọi 1-1: Emma &bull; Barista Melbourne</span>
+                            <span class="text-xs font-bold text-slate-200">{!! __('landing.chapter_2.simulator.calling') !!}</span>
                         </div>
 
                         <!-- Interactive Quick Step Switcher inside Simulator -->
                         <div class="flex items-center gap-1 bg-slate-800 p-1 rounded-xl text-[11px] font-semibold border border-slate-700">
-                            <button type="button" @click="setStep(1)" :class="currentStep === 1 ? 'bg-emerald-500 text-white shadow-xs' : 'text-slate-400 hover:text-white'" class="px-2.5 py-0.5 rounded-lg transition">Bước 1</button>
-                            <button type="button" @click="setStep(2)" :class="currentStep === 2 ? 'bg-amber-500 text-white shadow-xs' : 'text-slate-400 hover:text-white'" class="px-2.5 py-0.5 rounded-lg transition">Bước 2</button>
-                            <button type="button" @click="setStep(3)" :class="currentStep === 3 ? 'bg-cyan-500 text-white shadow-xs' : 'text-slate-400 hover:text-white'" class="px-2.5 py-0.5 rounded-lg transition">Bước 3</button>
+                            <button type="button" @click="setStep(1)" :class="currentStep === 1 ? 'bg-emerald-500 text-white shadow-xs' : 'text-slate-400 hover:text-white'" class="px-2.5 py-0.5 rounded-lg transition">{{ __('landing.chapter_2.simulator.step_1') }}</button>
+                            <button type="button" @click="setStep(2)" :class="currentStep === 2 ? 'bg-amber-500 text-white shadow-xs' : 'text-slate-400 hover:text-white'" class="px-2.5 py-0.5 rounded-lg transition">{{ __('landing.chapter_2.simulator.step_2') }}</button>
+                            <button type="button" @click="setStep(3)" :class="currentStep === 3 ? 'bg-cyan-500 text-white shadow-xs' : 'text-slate-400 hover:text-white'" class="px-2.5 py-0.5 rounded-lg transition">{{ __('landing.chapter_2.simulator.step_3') }}</button>
                         </div>
                     </div>
 
@@ -360,10 +361,10 @@
                         <!-- Top In-Call Badges -->
                         <div class="relative z-10 flex items-center justify-between text-xs">
                             <span class="px-3 py-1 rounded-full bg-slate-800/80 backdrop-blur-md border border-slate-700 text-slate-300 font-mono text-[11px]">
-                                ⏱️ 01:24 &bull; Cấp độ A2
+                                {!! __('landing.chapter_2.simulator.time_level') !!}
                             </span>
                             <span class="px-3 py-1 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-400/30 text-[11px] font-bold">
-                                ● Live Web Speech
+                                {{ __('landing.chapter_2.simulator.live_speech') }}
                             </span>
                         </div>
 
@@ -396,9 +397,9 @@
                              x-transition:enter-start="opacity-0 translate-y-3"
                              x-transition:enter-end="opacity-100 translate-y-0"
                              class="relative z-10 bg-slate-900/90 backdrop-blur-md border border-white/10 rounded-2xl p-3.5 shadow-xl">
-                            <span class="text-[10px] font-bold uppercase tracking-wider text-emerald-400 block mb-1">EMMA VỪA NÓI:</span>
+                            <span class="text-[10px] font-bold uppercase tracking-wider text-emerald-400 block mb-1">{{ __('landing.chapter_2.simulator.state_1_tag') }}</span>
                             <p class="text-xs sm:text-sm font-medium text-slate-100 italic">
-                                &ldquo;Hi there! Welcome to Melbourne Roastery. What can I get started for you today?&rdquo;
+                                {!! __('landing.chapter_2.simulator.state_1_text') !!}
                             </p>
                         </div>
 
@@ -410,20 +411,20 @@
                              class="relative z-10 space-y-2">
                             <div class="bg-amber-950/90 border border-amber-500/50 rounded-xl p-2.5 text-xs text-amber-200 flex items-center gap-2 shadow-glow-amber">
                                 <span class="material-symbols-outlined text-amber-400 text-[18px] animate-bounce">alt_route</span>
-                                <span><strong>Biến số đời thực:</strong> Quán hết sữa hạt, Emma hỏi bạn có muốn đổi sang sữa đậu nành không?</span>
+                                <span>{!! __('landing.chapter_2.simulator.state_2_incident') !!}</span>
                             </div>
                             <div class="bg-slate-900/95 backdrop-blur-md border border-white/20 rounded-2xl p-3 shadow-xl">
                                 <div class="flex items-center justify-between text-[10px] font-bold text-slate-400 mb-1">
-                                    <span>CHIẾC PHAO GIÀN GIÁO:</span>
-                                    <span class="text-amber-400">[💡 Tips bật sẵn]</span>
+                                    <span>{{ __('landing.chapter_2.simulator.state_2_scaffold_tag') }}</span>
+                                    <span class="text-amber-400">{{ __('landing.chapter_2.simulator.state_2_tips_badge') }}</span>
                                 </div>
                                 <p class="text-xs sm:text-sm font-semibold text-slate-200">
-                                    &ldquo;Sure, <span class="text-amber-300 underline font-mono bg-amber-400/10 px-1 rounded">soy milk is fine</span>, thanks!&rdquo;
+                                    {!! __('landing.chapter_2.simulator.state_2_sentence') !!}
                                 </p>
                                 <div class="flex items-center gap-2 mt-2 pt-1.5 border-t border-white/10 text-[11px] text-slate-400">
-                                    <span>Từ khóa:</span>
-                                    <button type="button" @click="speakSample('soy milk')" class="px-2 py-0.5 rounded bg-slate-800 text-slate-200 font-mono hover:bg-slate-700 transition">soy milk [🔊]</button>
-                                    <button type="button" @click="speakSample('instead')" class="px-2 py-0.5 rounded bg-slate-800 text-slate-200 font-mono hover:bg-slate-700 transition">instead [🔊]</button>
+                                    <span>{{ __('landing.chapter_2.simulator.state_2_keywords_label') }}</span>
+                                    <button type="button" @click="speakSample('soy milk')" class="px-2 py-0.5 rounded bg-slate-800 text-slate-200 font-mono hover:bg-slate-700 transition">{{ __('landing.chapter_2.simulator.keyword_soy_milk') }}</button>
+                                    <button type="button" @click="speakSample('instead')" class="px-2 py-0.5 rounded bg-slate-800 text-slate-200 font-mono hover:bg-slate-700 transition">{{ __('landing.chapter_2.simulator.keyword_instead') }}</button>
                                 </div>
                             </div>
                         </div>
@@ -435,19 +436,19 @@
                              x-transition:enter-end="opacity-100 translate-y-0"
                              class="relative z-10 bg-slate-900/95 backdrop-blur-md border border-white/20 rounded-2xl p-3.5 shadow-xl flex items-center justify-between gap-3 shadow-glow-cyan">
                             <div>
-                                <span class="text-[10px] font-bold uppercase tracking-wider text-cyan-400 block mb-0.5">ĐẾN LƯỢT BẠN MỞ LỜI:</span>
+                                <span class="text-[10px] font-bold uppercase tracking-wider text-cyan-400 block mb-0.5">{{ __('landing.chapter_2.simulator.state_3_tag') }}</span>
                                 <div class="flex items-center gap-2">
                                     <span class="w-2.5 h-2.5 rounded-full bg-rose-500 animate-ping"></span>
-                                    <span class="text-xs sm:text-sm font-semibold text-slate-100">Micro đang lắng nghe... Thư thái nói nhé!</span>
+                                    <span class="text-xs sm:text-sm font-semibold text-slate-100">{{ __('landing.chapter_2.simulator.state_3_status') }}</span>
                                 </div>
                             </div>
                             <div class="flex items-center gap-2">
                                 <button type="button" class="px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-[11px] font-semibold text-slate-300 border border-slate-700 flex items-center gap-1">
                                     <span class="material-symbols-outlined text-[15px]">undo</span>
-                                    <span>Nói lại</span>
+                                    <span>{{ __('landing.chapter_2.simulator.retry_btn') }}</span>
                                 </button>
                                 <button type="button" class="px-3.5 py-1.5 rounded-xl bg-emerald-500 text-white text-xs font-bold flex items-center gap-1 shadow-md">
-                                    <span>Xong</span>
+                                    <span>{{ __('landing.chapter_2.simulator.done_btn') }}</span>
                                     <span class="material-symbols-outlined text-[15px]">check</span>
                                 </button>
                             </div>
@@ -459,11 +460,11 @@
                     <div class="h-11 px-6 bg-slate-950 border-t border-slate-800 flex items-center justify-between text-xs text-slate-400">
                         <span class="flex items-center gap-1.5 text-[11px]">
                             <span class="material-symbols-outlined text-emerald-400 text-[15px]">lock</span>
-                            <span>Phòng luyện tập riêng tư 100%</span>
+                            <span>{{ __('landing.chapter_2.simulator.footer_private') }}</span>
                         </span>
                         <span class="text-emerald-400 font-mono text-[11px] flex items-center gap-1.5">
                             <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
-                            Phản hồi &le; 1.2s
+                            {!! __('landing.chapter_2.simulator.footer_speed') !!}
                         </span>
                     </div>
                 </div>
@@ -481,12 +482,12 @@
 
             <!-- Section Header: .text-title & .text-sub -->
             <div class="text-center max-w-2xl mx-auto mb-12">
-                <span class="text-caption uppercase text-sage-primary font-bold block mb-1.5">TRIẾT LÝ ĐÁNH GIÁ NHÂN VĂN</span>
+                <span class="text-caption uppercase text-sage-primary font-bold block mb-1.5">{{ __('landing.chapter_3.eyebrow') }}</span>
                 <h2 class="text-title">
-                    Không Điểm Số Đỏ Lòm. Chỉ Có Chỉ Số CSI Thấu Cảm.
+                    {{ __('landing.chapter_3.heading') }}
                 </h2>
                 <p class="text-sub text-pine-subtle mt-2.5 max-w-2xl mx-auto">
-                    Trong giao tiếp thực tế, quan trọng nhất là: <strong>Bạn có đạt được mục tiêu và kết nối được với con người hay không?</strong> Không ai trừ điểm bạn vì chia sai một mạo từ nhỏ.
+                    {!! __('landing.chapter_3.subtitle') !!}
                 </p>
             </div>
 
@@ -494,9 +495,9 @@
             <div id="csi-card" class="max-w-4xl mx-auto bg-white rounded-hero border border-sage-border p-6 sm:p-8 shadow-soft relative overflow-hidden">
                 <div class="flex flex-col md:flex-row md:items-center justify-between pb-6 mb-6 border-b border-warm-border gap-5">
                     <div>
-                        <span class="text-caption uppercase text-sage-primary font-bold block mb-1">KẾT QUẢ PHIÊN ĐỐI THOẠI MẪU</span>
-                        <h3 class="text-title-sm">Chỉ Số Thành Công Giao Tiếp (CSI Score)</h3>
-                        <p class="text-xs sm:text-sm text-pine-subtle mt-1">&ldquo;Bạn đã gọi được ly cà phê đúng ý mình chỉ sau 2 phút, xử lý linh hoạt khi đổi sang sữa đậu nành!&rdquo;</p>
+                        <span class="text-caption uppercase text-sage-primary font-bold block mb-1">{{ __('landing.chapter_3.card_tag') }}</span>
+                        <h3 class="text-title-sm">{{ __('landing.chapter_3.card_title') }}</h3>
+                        <p class="text-xs sm:text-sm text-pine-subtle mt-1">{!! __('landing.chapter_3.card_feedback') !!}</p>
                     </div>
 
                     <!-- Dynamic Score Display -->
@@ -511,45 +512,45 @@
                     <!-- Trụ 1 -->
                     <div class="p-4 sm:p-5 rounded-2xl bg-warm-50 border border-warm-border">
                         <div class="text-caption uppercase text-sage-primary mb-2 flex items-center justify-between font-bold">
-                            <span>40% RESOLUTION</span>
+                            <span>{{ __('landing.chapter_3.pillar_1_tag') }}</span>
                             <span class="text-pine font-black">95%</span>
                         </div>
                         <div class="w-full h-2 bg-stone-200 rounded-full mb-2.5 overflow-hidden">
                             <div class="csi-bar h-full bg-sage-primary rounded-full transition-all duration-1000" style="width: 95%;"></div>
                         </div>
-                        <h4 class="text-title-sm text-sm mb-1">Giải Quyết Mục Tiêu</h4>
+                        <h4 class="text-title-sm text-sm mb-1">{{ __('landing.chapter_3.pillar_1_title') }}</h4>
                         <p class="text-xs text-pine-subtle leading-relaxed">
-                            Bạn đã truyền đạt đúng thông điệp và nhận được thứ mình cần (ly cafe, phòng khách sạn, hỏi đường).
+                            {{ __('landing.chapter_3.pillar_1_desc') }}
                         </p>
                     </div>
 
                     <!-- Trụ 2 -->
                     <div class="p-4 sm:p-5 rounded-2xl bg-warm-50 border border-warm-border">
                         <div class="text-caption uppercase text-terracotta mb-2 flex items-center justify-between font-bold">
-                            <span>35% ADAPTABILITY</span>
+                            <span>{{ __('landing.chapter_3.pillar_2_tag') }}</span>
                             <span class="text-pine font-black">90%</span>
                         </div>
                         <div class="w-full h-2 bg-stone-200 rounded-full mb-2.5 overflow-hidden">
                             <div class="csi-bar h-full bg-terracotta rounded-full transition-all duration-1000" style="width: 90%;"></div>
                         </div>
-                        <h4 class="text-title-sm text-sm mb-1">Ứng Biến Linh Hoạt</h4>
+                        <h4 class="text-title-sm text-sm mb-1">{{ __('landing.chapter_3.pillar_2_title') }}</h4>
                         <p class="text-xs text-pine-subtle leading-relaxed">
-                            Khả năng giữ bình tĩnh và chuyển hướng tự nhiên khi có biến số đời thường phát sinh.
+                            {{ __('landing.chapter_3.pillar_2_desc') }}
                         </p>
                     </div>
 
                     <!-- Trụ 3 -->
                     <div class="p-4 sm:p-5 rounded-2xl bg-warm-50 border border-warm-border">
                         <div class="text-caption uppercase text-indigo-700 mb-2 flex items-center justify-between font-bold">
-                            <span>25% FLOW</span>
+                            <span>{{ __('landing.chapter_3.pillar_3_tag') }}</span>
                             <span class="text-pine font-black">88%</span>
                         </div>
                         <div class="w-full h-2 bg-stone-200 rounded-full mb-2.5 overflow-hidden">
                             <div class="csi-bar h-full bg-indigo-600 rounded-full transition-all duration-1000" style="width: 88%;"></div>
                         </div>
-                        <h4 class="text-title-sm text-sm mb-1">Nhịp Điệu Tự Nhiên</h4>
+                        <h4 class="text-title-sm text-sm mb-1">{{ __('landing.chapter_3.pillar_3_title') }}</h4>
                         <p class="text-xs text-pine-subtle leading-relaxed">
-                            Tốc độ phản xạ, sự tự tin và giảm dần khoảng lặng ngập ngừng qua từng ngày.
+                            {{ __('landing.chapter_3.pillar_3_desc') }}
                         </p>
                     </div>
                 </div>
@@ -566,16 +567,16 @@
 
             <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-emerald-50 border border-emerald-200 text-emerald-800 text-caption font-bold uppercase tracking-wider mb-3.5">
                 <span class="material-symbols-outlined text-[16px]">touch_app</span>
-                <span>TRẢI NGHIỆM TƯƠNG TÁC TẠI CHỖ</span>
+                <span>{{ __('landing.chapter_4.eyebrow') }}</span>
             </div>
 
             <!-- Title: .text-title -->
             <h2 class="text-title mb-3.5">
-                Đừng chờ đợi sự hoàn hảo.<br>
-                <span class="font-serif italic font-normal text-terracotta">Hãy mở lời ngay bây giờ.</span>
+                {{ __('landing.chapter_4.heading_line1') }}<br>
+                <span class="font-serif italic font-normal text-terracotta">{{ __('landing.chapter_4.heading_line2') }}</span>
             </h2>
             <p class="text-sub text-pine-subtle mb-8 max-w-xl mx-auto">
-                Bấm vào nút bên dưới để nghe câu chào từ Emma hoặc nói thử một câu ngắn vào micro của bạn ngay trên trang này:
+                {{ __('landing.chapter_4.subtitle') }}
             </p>
 
             <!-- INTERACTIVE MICRO-VOICE WIDGET -->
@@ -583,23 +584,23 @@
                 <div class="flex items-center justify-between mb-3.5 pb-3 border-b border-warm-border">
                     <div class="flex items-center gap-2">
                         <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
-                        <span class="text-caption font-bold text-pine uppercase">Emma hỏi bạn:</span>
+                        <span class="text-caption font-bold text-pine uppercase">{{ __('landing.chapter_4.emma_ask') }}</span>
                     </div>
                     <button type="button" @click="speakDemo()" class="px-3 py-1.5 rounded-full bg-sage-tint text-sage-primary text-xs font-bold flex items-center gap-1.5 hover:bg-emerald-100 transition shadow-xs">
                         <span class="material-symbols-outlined text-[16px]">volume_up</span>
-                        <span>Nghe Emma nói [🔊]</span>
+                        <span>{{ __('landing.chapter_4.listen_emma_btn') }}</span>
                     </button>
                 </div>
 
                 <p class="text-base font-medium text-pine italic mb-4 leading-relaxed">
-                    &ldquo;Hi there! What's your favorite drink in the morning?&rdquo;
+                    {!! __('landing.chapter_4.emma_question') !!}
                 </p>
 
                 <!-- Voice Recording Interaction -->
                 <div class="p-3.5 sm:p-4 rounded-xl bg-white border border-sage-border-light flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-xs">
                     <div class="min-w-0">
-                        <span class="text-caption font-bold text-pine-muted block text-[10px]">CÂU BẠN NÓI:</span>
-                        <span class="text-xs sm:text-sm font-semibold text-pine truncate block" x-text="userSaid || 'Bấm nút micro và nói: I love a cup of black coffee.'"></span>
+                        <span class="text-caption font-bold text-pine-muted block text-[10px]">{{ __('landing.chapter_4.user_sentence_tag') }}</span>
+                        <span class="text-xs sm:text-sm font-semibold text-pine truncate block" x-text="userSaid || '{{ __('landing.chapter_4.user_sentence_default') }}'"></span>
                     </div>
 
                     <button type="button"
@@ -607,7 +608,7 @@
                             :class="isRecording ? 'bg-rose-500 animate-pulse text-white' : 'bg-sage-primary hover:bg-sage-primary-hover text-white'"
                             class="min-h-touch-md sm:min-h-touch py-2 px-4 rounded-xl text-xs font-bold flex items-center justify-center gap-1.5 transition shrink-0 shadow-soft-sm cursor-pointer">
                         <span class="material-symbols-outlined text-[18px]" x-text="isRecording ? 'graphic_eq' : 'mic'"></span>
-                        <span x-text="isRecording ? 'Đang lắng nghe...' : 'Nói thử 1 câu'"></span>
+                        <span x-text="isRecording ? '{{ __('landing.chapter_4.recording_status') }}' : '{{ __('landing.chapter_4.record_button') }}'"></span>
                     </button>
                 </div>
 
@@ -623,22 +624,22 @@
                 <a href="{{ Route::has('scenarios.index') ? route('scenarios.index') : '/practice' }}"
                    class="btn-cta">
                     <span class="material-symbols-outlined text-[24px]">rocket_launch</span>
-                    <span>VÀO PHÒNG LUYỆN NÓI NGAY &mdash; 100% MIỄN PHÍ</span>
+                    <span>{!! __('landing.chapter_4.cta_button') !!}</span>
                     <span class="material-symbols-outlined text-[20px]">arrow_forward</span>
                 </a>
 
                 <div class="flex flex-wrap items-center justify-center gap-5 sm:gap-7 text-xs text-pine-subtle font-medium pt-1.5">
                     <span class="flex items-center gap-1">
                         <span class="material-symbols-outlined text-sage-primary text-[16px]">check_circle</span>
-                        <span>Không cần thẻ ngân hàng</span>
+                        <span>{{ __('landing.chapter_4.badge_no_card') }}</span>
                     </span>
                     <span class="flex items-center gap-1">
                         <span class="material-symbols-outlined text-sage-primary text-[16px]">check_circle</span>
-                        <span>Không bắt buộc đăng nhập</span>
+                        <span>{{ __('landing.chapter_4.badge_no_login') }}</span>
                     </span>
                     <span class="flex items-center gap-1">
                         <span class="material-symbols-outlined text-sage-primary text-[16px]">check_circle</span>
-                        <span>100% Chạy trên trình duyệt</span>
+                        <span>{{ __('landing.chapter_4.badge_in_browser') }}</span>
                     </span>
                 </div>
             </div>
@@ -656,20 +657,20 @@
                     <span class="material-symbols-outlined text-[18px]">graphic_eq</span>
                 </span>
                 <div>
-                    <span class="font-bold text-base text-pine block">mở lời.</span>
-                    <span class="text-caption">AI Real-World English Communication Simulator</span>
+                    <span class="font-bold text-base text-pine block">{{ __('common.brand') }}</span>
+                    <span class="text-caption">{{ __('landing.footer.tagline') }}</span>
                 </div>
             </div>
 
             <div class="flex flex-wrap items-center gap-6 text-xs font-semibold">
-                <a href="{{ Route::has('scenarios.index') ? route('scenarios.index') : '/practice' }}" class="hover:text-sage-primary transition">Phòng kịch bản</a>
-                <a href="{{ Route::has('notes.index') ? route('notes.index') : '/notes' }}" class="hover:text-sage-primary transition">Giấy Note thông minh</a>
-                <a href="{{ Route::has('admin.costs') ? route('admin.costs') : '/admin/costs' }}" class="text-emerald-700 hover:underline">Quản trị chi phí</a>
+                <a href="{{ Route::has('scenarios.index') ? route('scenarios.index') : '/practice' }}" class="hover:text-sage-primary transition">{{ __('landing.footer.scenarios') }}</a>
+                <a href="{{ Route::has('notes.index') ? route('notes.index') : '/notes' }}" class="hover:text-sage-primary transition">{{ __('landing.footer.notes') }}</a>
+                <a href="{{ Route::has('admin.costs') ? route('admin.costs') : '/admin/costs' }}" class="text-emerald-700 hover:underline">{{ __('landing.footer.admin_costs') }}</a>
             </div>
 
             <div class="text-center md:text-right text-[11px] text-stone-400">
-                <p>&copy; {{ date('Y') }} mở lời. All rights reserved.</p>
-                <p class="mt-0.5">Xử lý âm thanh Web Speech API &bull; 100% Bảo mật dữ liệu người học</p>
+                <p>&copy; {{ date('Y') }} {{ __('common.brand') }}. {{ __('landing.footer.rights_reserved') }}</p>
+                <p class="mt-0.5">{!! __('landing.footer.security_notice') !!}</p>
             </div>
         </div>
     </footer>
@@ -817,6 +818,13 @@
                 stepProgress: 0,
                 progressInterval: null,
                 isPaused: false,
+                i18n: {
+                    promptSpeech: @json(__('landing.chapter_4.js.prompt_speech')),
+                    speechSuccess: @json(__('landing.chapter_4.js.speech_success')),
+                    speechFallback: @json(__('landing.chapter_4.js.speech_fallback')),
+                    speechError: @json(__('landing.chapter_4.js.speech_error')),
+                    speechNotSupported: @json(__('landing.chapter_4.js.speech_not_supported')),
+                },
 
                 init() {
                     window.updateSimulatorStep = (step) => {
@@ -907,7 +915,7 @@
                         u.rate = 0.95;
                         window.speechSynthesis.speak(u);
                     } else {
-                        alert('Trình duyệt chưa hỗ trợ Web Speech Synthesis.');
+                        alert(this.i18n.speechNotSupported);
                     }
                 },
 
@@ -915,7 +923,7 @@
                     const SpeechRec = window.SpeechRecognition || window.webkitSpeechRecognition;
                     if (!SpeechRec) {
                         this.userSaid = 'I love a cup of hot black coffee.';
-                        this.demoFeedback = '🎉 Nhận diện thành công: Bạn phát âm rất rõ và tự tin!';
+                        this.demoFeedback = this.i18n.speechFallback;
                         if (typeof confetti === 'function') {
                             confetti({ particleCount: 40, spread: 50, origin: { y: 0.85 } });
                         }
@@ -928,13 +936,13 @@
                     rec.maxAlternatives = 1;
 
                     this.isRecording = true;
-                    this.demoFeedback = '🎙️ Hãy nói vào micro một câu tiếng Anh bất kỳ...';
+                    this.demoFeedback = this.i18n.promptSpeech;
 
                     rec.onresult = (e) => {
                         this.isRecording = false;
                         const transcript = e.results[0][0].transcript;
                         this.userSaid = `"${transcript}"`;
-                        this.demoFeedback = `👏 Tuyệt vời! "${transcript}" phản xạ rất tự nhiên và dứt khoát!`;
+                        this.demoFeedback = this.i18n.speechSuccess.replace(':transcript', transcript);
                         if (typeof confetti === 'function') {
                             confetti({ particleCount: 60, spread: 70, origin: { y: 0.85 } });
                         }
@@ -943,7 +951,7 @@
                     rec.onerror = () => {
                         this.isRecording = false;
                         this.userSaid = 'I love iced Americano with no sugar.';
-                        this.demoFeedback = '👍 Nhận diện tốt! Bạn thử vào phòng thật để đối thoại sâu hơn nhé.';
+                        this.demoFeedback = this.i18n.speechError;
                     };
 
                     rec.onend = () => {
