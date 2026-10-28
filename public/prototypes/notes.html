@@ -1,0 +1,1447 @@
+<!DOCTYPE html>
+<html lang="vi" class="h-full bg-[#FAF8F5]">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mở Lời. - Kiến Trúc Giấy Note & Cơ Chế Nhắc Luyện (Interactive Prototype)</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts: Inter, Patrick Hand, Caveat, Noto Sans CJK -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@600;700&family=Inter:wght@300;400;500;600;700;800&family=Patrick+Hand&family=Noto+Sans+JP:wght@400;500;700&family=Noto+Sans+KR:wght@400;500;700&family=Noto+Sans+SC:wght@400;500;700&display=swap" rel="stylesheet">
+    <!-- Google Material Symbols -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+    <!-- Alpine.js CDN -->
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.14.3/dist/cdn.min.js"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        pine: {
+                            DEFAULT: '#267052',
+                            dark: '#1C533D',
+                            light: '#358A67',
+                            subtle: '#EDF5F1',
+                        },
+                        terracotta: '#BA583C',
+                        sand: '#FAF8F5',
+                        borderPaper: '#E7E1D8',
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        hand: ['"Patrick Hand"', 'cursive'],
+                        caveat: ['"Caveat"', 'cursive'],
+                        jp: ['"Noto Sans JP"', 'sans-serif'],
+                        sc: ['"Noto Sans SC"', 'sans-serif'],
+                        kr: ['"Noto Sans KR"', 'sans-serif'],
+                    },
+                    boxShadow: {
+                        'sticky': '0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 8px 16px -2px rgba(0, 0, 0, 0.07), 0 1px 2px 0 rgba(0, 0, 0, 0.04)',
+                        'sticky-hover': '0 12px 28px -4px rgba(0, 0, 0, 0.12), 0 6px 12px -2px rgba(0, 0, 0, 0.06)',
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        [x-cloak] { display: none !important; }
+        
+        /* 3D Flip Card */
+        .perspective-1000 {
+            perspective: 1000px;
+        }
+        .transform-style-3d {
+            transform-style: preserve-3d;
+        }
+        .backface-hidden {
+            backface-visibility: hidden;
+            -webkit-backface-visibility: hidden;
+        }
+        .rotate-y-180 {
+            transform: rotateY(180deg);
+        }
+
+        /* PIN STYLES */
+        .pin-thumbtack-brass {
+            position: absolute;
+            top: -9px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: radial-gradient(circle at 35% 35%, #fde047, #ca8a04, #854d0e);
+            box-shadow: 0 3px 5px rgba(0,0,0,0.3), inset 0 1px 2px rgba(255,255,255,0.8);
+            z-index: 10;
+        }
+        .pin-thumbtack-silver {
+            position: absolute;
+            top: -9px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: radial-gradient(circle at 35% 35%, #ffffff, #cbd5e1, #64748b);
+            box-shadow: 0 3px 5px rgba(0,0,0,0.2), inset 0 1px 2px rgba(255,255,255,0.9);
+            z-index: 10;
+        }
+        .pin-thumbtack-red {
+            position: absolute;
+            top: -9px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: radial-gradient(circle at 35% 35%, #f87171, #dc2626);
+            box-shadow: 0 3px 5px rgba(0,0,0,0.25), inset 0 1px 2px rgba(255,255,255,0.6);
+            z-index: 10;
+        }
+        .pin-washi-kraft {
+            position: absolute;
+            top: -10px;
+            left: 50%;
+            transform: translateX(-50%) rotate(-1deg);
+            width: 75px;
+            height: 22px;
+            background: rgba(229, 217, 196, 0.85);
+            backdrop-filter: blur(2px);
+            border: 1px dashed rgba(180, 160, 130, 0.5);
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+            z-index: 10;
+        }
+        .pin-washi-caro {
+            position: absolute;
+            top: -10px;
+            left: 50%;
+            transform: translateX(-50%) rotate(1.5deg);
+            width: 75px;
+            height: 22px;
+            background: repeating-linear-gradient(45deg, #fce7f3, #fce7f3 6px, #fbcfe8 6px, #fbcfe8 12px);
+            opacity: 0.88;
+            border: 1px solid rgba(244, 114, 182, 0.3);
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+            z-index: 10;
+        }
+        .pin-paperclip {
+            position: absolute;
+            top: -14px;
+            right: 24px;
+            width: 14px;
+            height: 32px;
+            border: 2.5px solid #94a3b8;
+            border-radius: 8px;
+            box-shadow: 1px 2px 3px rgba(0,0,0,0.18);
+            z-index: 10;
+            background: transparent;
+        }
+
+        /* Micro Cultural Stamp */
+        .cultural-stamp {
+            position: absolute;
+            bottom: 12px;
+            right: 12px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            filter: drop-shadow(0 2px 3px rgba(0,0,0,0.12));
+            transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+            user-select: none;
+        }
+        .cultural-stamp:hover {
+            transform: scale(1.2) rotate(6deg);
+        }
+
+        /* Paper curl */
+        .paper-curl {
+            position: relative;
+        }
+        .paper-curl::after {
+            content: '';
+            position: absolute;
+            bottom: 0px;
+            right: 0px;
+            width: 0;
+            height: 0;
+            border-style: solid;
+            border-width: 0 0 16px 16px;
+            border-color: transparent transparent rgba(0,0,0,0.06) transparent;
+            pointer-events: none;
+        }
+
+        /* Listening Glow */
+        @keyframes speakingPulse {
+            0% { box-shadow: 0 0 0 0 rgba(38, 112, 82, 0.4); }
+            70% { box-shadow: 0 0 0 14px rgba(38, 112, 82, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(38, 112, 82, 0); }
+        }
+        .speaking-active {
+            animation: speakingPulse 1.6s infinite;
+        }
+    </style>
+</head>
+<body class="h-full flex flex-col font-sans text-stone-800 antialiased" x-data="noteJournalApp()">
+
+    <!-- TOP GLOBAL BAR -->
+    <header class="bg-white border-b border-borderPaper sticky top-0 z-40 px-4 sm:px-8 py-3 flex items-center justify-between">
+        <div class="flex items-center gap-6">
+            <div class="flex items-center gap-2.5">
+                <div class="w-8 h-8 rounded-lg bg-pine flex items-center justify-center text-white font-bold text-sm shadow-sm">
+                    mở
+                </div>
+                <div>
+                    <span class="text-lg font-bold text-stone-900 tracking-tight">mở lời.</span>
+                    <span class="ml-2 text-[11px] font-semibold uppercase tracking-wider px-2 py-0.5 rounded-full bg-emerald-50 text-pine border border-emerald-200">
+                        Kiến Trúc Note & Nhắc Lịch
+                    </span>
+                </div>
+            </div>
+
+            <!-- 4 TABS NAVIGATION TRỰC QUAN -->
+            <nav class="hidden lg:flex items-center gap-1 bg-stone-100 p-1 rounded-xl border border-stone-200 text-xs font-medium">
+                <!-- Tab 1: Trang Kết Quả (Nơi phát sinh Note) -->
+                <button @click="currentTab = 'summary_flow'"
+                        :class="currentTab === 'summary_flow' ? 'bg-white text-stone-900 shadow-sm font-bold' : 'text-stone-600 hover:text-stone-900'"
+                        class="px-3 py-1.5 rounded-lg transition flex items-center gap-1.5">
+                    <span class="material-symbols-outlined [font-size:16px] text-pine">fact_check</span>
+                    <span>1. Trang Kết Quả (Summary)</span>
+                </button>
+
+                <!-- Tab 2: Bảng Giấy Note (Nơi Lưu & Xem Lại Trung Tâm) -->
+                <button @click="currentTab = 'board'"
+                        :class="currentTab === 'board' ? 'bg-white text-stone-900 shadow-sm font-bold' : 'text-stone-600 hover:text-stone-900'"
+                        class="px-3 py-1.5 rounded-lg transition flex items-center gap-1.5">
+                    <span class="material-symbols-outlined [font-size:16px] text-amber-600">sticky_note_2</span>
+                    <span>2. Sổ Bảng Note (/notes)</span>
+                    <span class="px-1.5 py-0.2 rounded-full bg-terracotta text-white text-[10px] font-bold" x-text="dueCount"></span>
+                </button>
+
+                <!-- Tab 3: Cài Đặt Khung Giờ & Notification -->
+                <button @click="currentTab = 'reminder_settings'"
+                        :class="currentTab === 'reminder_settings' ? 'bg-white text-stone-900 shadow-sm font-bold' : 'text-stone-600 hover:text-stone-900'"
+                        class="px-3 py-1.5 rounded-lg transition flex items-center gap-1.5">
+                    <span class="material-symbols-outlined [font-size:16px] text-cyan-600">alarm</span>
+                    <span>3. Khung Giờ & Nhắc Lịch</span>
+                </button>
+
+                <!-- Tab 4: Phân Tích Chuyên Sâu -->
+                <button @click="currentTab = 'design_analysis'"
+                        :class="currentTab === 'design_analysis' ? 'bg-white text-stone-900 shadow-sm font-bold' : 'text-stone-600 hover:text-stone-900'"
+                        class="px-3 py-1.5 rounded-lg transition flex items-center gap-1.5">
+                    <span class="material-symbols-outlined [font-size:16px] text-purple-600">psychology_alt</span>
+                    <span>4. "Có Trẻ Con Không?"</span>
+                </button>
+            </nav>
+        </div>
+
+        <!-- RIGHT CTA: FAST CREATE NOTE & REVIEW -->
+        <div class="flex items-center gap-2.5">
+            <button @click="openCreateModal()"
+                    class="px-3.5 py-1.5 rounded-xl border border-borderPaper bg-white hover:bg-stone-50 text-stone-800 text-xs font-bold transition shadow-sm flex items-center gap-1.5">
+                <span class="material-symbols-outlined [font-size:16px] text-pine">edit_note</span>
+                <span class="hidden sm:inline">+ Tự Viết Note</span>
+            </button>
+
+            <button @click="startFocusReview()"
+                    class="px-4 py-1.5 rounded-xl bg-pine hover:bg-pine-dark text-white text-xs font-bold transition shadow-sm flex items-center gap-1.5">
+                <span class="material-symbols-outlined [font-size:16px]">style</span>
+                <span>Ôn 60s (<span x-text="dueCount"></span> tờ)</span>
+            </button>
+        </div>
+    </header>
+
+    <!-- MAIN BODY -->
+    <main class="flex-1 overflow-y-auto">
+
+        <!-- ============================================================ -->
+        <!-- VIEW 1: TRANG KẾT QUẢ (SUMMARY) & MODAL TẠO NOTE TẠI CHỖ    -->
+        <!-- ============================================================ -->
+        <div x-show="currentTab === 'summary_flow'" x-cloak class="max-w-4xl mx-auto px-4 py-8">
+            <!-- Explain Banner -->
+            <div class="mb-6 p-4 bg-emerald-50/70 border border-emerald-200/80 rounded-2xl flex items-start gap-3">
+                <span class="material-symbols-outlined text-pine mt-0.5 [font-size:20px]">lightbulb</span>
+                <div class="text-xs text-stone-700 leading-relaxed">
+                    <strong class="text-pine font-bold">Giải pháp câu hỏi của bạn:</strong> Sau khi hoàn thành buổi luyện nói, người học đến <strong>Trang Kết Quả (Summary)</strong>. Tại đây, note được kích hoạt bằng <strong>MODAL bật lên ngay tại chỗ</strong> (không chuyển sang trang mới để tránh đứt gãy mạch cảm xúc). Người học có thể ghim nhanh câu gợi ý của AI hoặc tự viết thêm note mới.
+                </div>
+            </div>
+
+            <!-- MOCK SUMMARY PAGE -->
+            <div class="space-y-6">
+                <!-- 1. Header & Score -->
+                <div class="bg-white rounded-3xl border border-borderPaper p-6 sm:p-8 shadow-sm text-center relative overflow-hidden">
+                    <div class="inline-flex items-center gap-1 px-3 py-1 bg-emerald-50 text-pine rounded-full text-xs font-bold uppercase tracking-wider mb-2 border border-emerald-200">
+                        <span class="material-symbols-outlined [font-size:15px]">celebration</span>
+                        <span>Hoàn Thành Phiên Luyện • Tiếng Nhật 🇯🇵</span>
+                    </div>
+                    <h1 class="text-2xl font-black text-stone-900">Báo Cáo Thành Tích Đối Thoại</h1>
+                    <p class="text-xs text-stone-500 mt-1">Quán Cà Phê Đặc Sản &bull; Đối thoại cùng Kenji &bull; Cấp độ A2</p>
+
+                    <div class="inline-flex items-baseline my-4">
+                        <span class="text-5xl font-black text-pine">88</span>
+                        <span class="text-xl font-bold text-stone-400 ml-1">/100 CSI</span>
+                    </div>
+
+                    <p class="text-xs sm:text-sm text-stone-700 max-w-lg mx-auto italic">
+                        &ldquo;Phản xạ của bạn rất tự nhiên khi hỏi về món signature. Hãy chú ý câu chia bill khi đi ăn nhóm nhé!&rdquo;
+                    </p>
+                </div>
+
+                <!-- 2. PHẦN TÍNH NĂNG MỚI: "GÓC GIẤY NOTE SAU PHIÊN LUYỆN" (POST-SESSION STICKY WIDGET) -->
+                <div class="bg-white rounded-3xl border border-borderPaper p-6 shadow-sm space-y-4">
+                    <div class="flex items-center justify-between flex-wrap gap-2">
+                        <div>
+                            <h3 class="text-base font-bold text-stone-900 flex items-center gap-2">
+                                <span class="text-xl">📌</span>
+                                <span>Giấy Note Bạn Đã Lưu Trong Buổi Luyện Này</span>
+                            </h3>
+                            <p class="text-xs text-stone-500 mt-0.5">Các từ & câu bạn đã ghim hoặc tự viết để hệ thống lên lịch ôn sau 24h</p>
+                        </div>
+
+                        <!-- Button Open Modal to Add Note -->
+                        <button @click="openCreateModalFromSummary()"
+                                class="px-3.5 py-2 rounded-xl bg-pine hover:bg-pine-dark text-white text-xs font-bold transition shadow-sm flex items-center gap-1.5">
+                            <span class="material-symbols-outlined [font-size:16px]">add</span>
+                            <span>+ Tự viết thêm note từ buổi này</span>
+                        </button>
+                    </div>
+
+                    <!-- Pinned Notes Carousel / Grid from this Session -->
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
+                        <!-- Note 1 already pinned -->
+                        <div class="p-4 rounded-2xl bg-[#FEF9C3] border border-amber-200/80 shadow-sticky relative paper-curl">
+                            <div class="pin-thumbtack-brass"></div>
+                            <div class="cultural-stamp text-lg">🌸</div>
+                            <div class="flex items-center justify-between text-[11px] text-stone-600 mb-1">
+                                <span class="font-bold">🇯🇵 Tiếng Nhật</span>
+                                <span class="px-2 py-0.5 rounded-full bg-black/5 font-bold">Hẹn mai ôn</span>
+                            </div>
+                            <h4 class="text-base font-bold text-stone-900">お会計を別々でお願いします</h4>
+                            <p class="text-xs font-mono text-stone-600 mt-0.5">Okaikei o betsubetsu de onegaishimasu</p>
+                            <div class="mt-2 pt-2 border-t border-black/10 text-xs text-stone-800">
+                                <strong>Nghĩa của bạn:</strong> Xin vui lòng tính tiền riêng từng người ạ
+                            </div>
+                        </div>
+
+                        <!-- Note 2 already pinned -->
+                        <div class="p-4 rounded-2xl bg-[#ECFDF5] border border-emerald-200/80 shadow-sticky relative paper-curl">
+                            <div class="pin-washi-kraft"></div>
+                            <div class="cultural-stamp text-lg">🍜</div>
+                            <div class="flex items-center justify-between text-[11px] text-stone-600 mb-1">
+                                <span class="font-bold">🇯🇵 Tiếng Nhật</span>
+                                <span class="px-2 py-0.5 rounded-full bg-black/5 font-bold">Hẹn mai ôn</span>
+                            </div>
+                            <h4 class="text-base font-bold text-stone-900">おすすめは何ですか？</h4>
+                            <p class="text-xs font-mono text-stone-600 mt-0.5">Osusume wa nan desu ka?</p>
+                            <div class="mt-2 pt-2 border-t border-black/10 text-xs text-stone-800">
+                                <strong>Nghĩa của bạn:</strong> Món gợi ý đặc sắc của quán là gì vậy?
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 3. TURN INSPECTOR WITH QUICK-PIN BUTTONS -->
+                <div class="bg-white rounded-3xl border border-borderPaper p-6 shadow-sm space-y-4">
+                    <h3 class="text-base font-bold text-stone-900 flex items-center gap-2">
+                        <span class="material-symbols-outlined text-stone-500">record_voice_over</span>
+                        <span>Chi Tiết Lượt Thoại & Mẫu Câu Bản Xứ Đề Xuất</span>
+                    </h3>
+
+                    <div class="space-y-4">
+                        <!-- Turn 1: AI Prompt with Pin Button -->
+                        <div class="p-4 rounded-2xl bg-sand border border-stone-200 flex flex-col sm:flex-row sm:items-start justify-between gap-3">
+                            <div class="space-y-1">
+                                <span class="text-[11px] font-bold text-pine uppercase tracking-wider block">Kenji (Barista) nói:</span>
+                                <p class="text-sm font-semibold text-stone-900">“当店自慢の水出しコールドブリューはいかがでしょうか？”</p>
+                                <p class="text-xs text-stone-500 italic">Quý khách có muốn thử món cà phê ủ lạnh đặc trưng của quán không ạ?</p>
+                            </div>
+
+                            <!-- Click to Pin into Modal -->
+                            <button @click="quickPinFromTurn('当店自慢の水出しコールドブリューはいかがでしょうか？', 'Tōten jiman no mizudashi kōrudo buryū wa ikaga deshō ka?', 'Bạn có muốn thử món cà phê ủ lạnh của quán không?', 'ja')"
+                                    class="px-3 py-1.5 rounded-xl bg-white hover:bg-stone-50 border border-stone-300 text-stone-700 text-xs font-bold transition flex items-center gap-1 shrink-0 self-start">
+                                <span class="material-symbols-outlined [font-size:15px] text-amber-600">push_pin</span>
+                                <span>Ghim câu này</span>
+                            </button>
+                        </div>
+
+                        <!-- Turn 2: User Weak Turn with Native Suggestion -->
+                        <div class="p-4 rounded-2xl bg-amber-50/50 border border-amber-200 flex flex-col sm:flex-row sm:items-start justify-between gap-3">
+                            <div class="space-y-1">
+                                <span class="text-[11px] font-bold text-terracotta uppercase tracking-wider block">Cách nói tự nhiên hơn của người bản xứ:</span>
+                                <p class="text-sm font-semibold text-stone-900">“少々お待ちいただけますか？” (Bạn có thể vui lòng đợi một chút được không?)</p>
+                                <p class="text-xs text-stone-600">Thay vì nói ngập ngừng, người Nhật hay dùng mẫu kính ngữ nhẹ nhàng này.</p>
+                            </div>
+
+                            <!-- Click to Pin into Modal -->
+                            <button @click="quickPinFromTurn('少々お待ちいただけますか？', 'Shōshō omachi itadakemasu ka?', 'Bạn có thể vui lòng đợi một chút được không ạ?', 'ja')"
+                                    class="px-3 py-1.5 rounded-xl bg-terracotta hover:bg-amber-700 text-white text-xs font-bold transition flex items-center gap-1 shrink-0 self-start shadow-sm">
+                                <span class="material-symbols-outlined [font-size:15px]">push_pin</span>
+                                <span>Ghim câu bản xứ này</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ============================================================ -->
+        <!-- VIEW 2: THE CORKBOARD (NƠI LƯU TRỮ & XEM LẠI TRUNG TÂM /notes)-->
+        <!-- ============================================================ -->
+        <div x-show="currentTab === 'board'" x-cloak class="max-w-6xl mx-auto px-4 py-8">
+            <div class="mb-6 p-4 bg-amber-50/70 border border-amber-200/80 rounded-2xl flex items-start gap-3">
+                <span class="material-symbols-outlined text-amber-700 mt-0.5 [font-size:20px]">inventory_2</span>
+                <div class="text-xs text-stone-700 leading-relaxed">
+                    <strong class="text-amber-900 font-bold">Giải pháp câu hỏi "Xem lại ở đâu?":</strong>
+                    Chúng ta xem lại tại <strong>Trang Riêng Biệt (`/notes` - Bảng Giấy Note)</strong> làm trung tâm. Lý do: nếu chỉ xem trong lịch sử trò chuyện cũ, sau 3-5 ngày các từ cần ôn sẽ nằm rải rác ở 10 cuộc trò chuyện khác nhau, người học không thể tìm lại được. Trang `/notes` này gom toàn bộ các từ <strong>"Đến hạn ôn hôm nay"</strong> về một chỗ để người học bóc ôn trong 60 giây!
+                </div>
+            </div>
+
+            <!-- FILTER TABS & LANGUAGE SWITCHER -->
+            <div class="flex items-center justify-between gap-4 mb-6 pb-4 border-b border-borderPaper flex-wrap">
+                <div class="flex items-center gap-1.5 flex-wrap">
+                    <button @click="activeLang = 'all'"
+                            :class="activeLang === 'all' ? 'bg-stone-900 text-white' : 'bg-white text-stone-700 hover:bg-stone-100 border border-stone-200'"
+                            class="px-3 py-1.5 rounded-full text-xs font-bold transition">
+                        Tất cả (<span x-text="notes.length"></span>)
+                    </button>
+                    <template x-for="lang in availableLanguages" :key="lang.code">
+                        <button @click="activeLang = lang.code"
+                                :class="activeLang === lang.code ? 'bg-pine text-white' : 'bg-white text-stone-700 hover:bg-stone-100 border border-stone-200'"
+                                class="px-3 py-1.5 rounded-full text-xs font-bold transition flex items-center gap-1.5">
+                            <span x-text="lang.flag"></span>
+                            <span x-text="lang.name"></span>
+                            <span class="text-[10px] opacity-80" x-text="'(' + countByLang(lang.code) + ')'"></span>
+                        </button>
+                    </template>
+                </div>
+
+                <div class="flex items-center gap-2 text-xs">
+                    <button @click="activeStatus = 'all'"
+                            :class="activeStatus === 'all' ? 'text-stone-900 font-bold underline' : 'text-stone-500 hover:text-stone-800'">
+                        Tất cả
+                    </button>
+                    <span class="text-stone-300">|</span>
+                    <button @click="activeStatus = 'due'"
+                            :class="activeStatus === 'due' ? 'text-terracotta font-bold underline' : 'text-stone-500 hover:text-stone-800'">
+                        Cần bóc hôm nay (<span x-text="dueCount"></span>)
+                    </button>
+                    <span class="text-stone-300">|</span>
+                    <button @click="activeStatus = 'mastered'"
+                            :class="activeStatus === 'mastered' ? 'text-purple-700 font-bold underline' : 'text-stone-500 hover:text-stone-800'">
+                        Đã thuộc (<span x-text="masteredCount"></span>)
+                    </button>
+                </div>
+            </div>
+
+            <!-- THE STICKY BOARD -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 items-start">
+                <template x-for="note in filteredNotes" :key="note.id">
+                    <div class="perspective-1000 group">
+                        <div class="relative transition-all duration-500 transform-style-3d min-h-[285px] cursor-pointer"
+                             :class="{ 'rotate-y-180': note.isFlipped, [note.tiltClass]: true }"
+                             @click="toggleFlip(note)">
+
+                            <!-- FRONT SIDE -->
+                            <div class="absolute inset-0 backface-hidden rounded-2xl p-5 border shadow-sticky group-hover:shadow-sticky-hover transition-all flex flex-col justify-between paper-curl"
+                                 :class="[colorMap[note.color].bg, note.isSpeakingNow ? 'ring-4 ring-emerald-400 speaking-active' : '']">
+
+                                <div :class="pinClassMap[note.pinStyle]"></div>
+                                <div class="cultural-stamp" x-text="note.stampEmoji"></div>
+
+                                <div class="flex items-center justify-between text-xs pt-1 mb-2">
+                                    <span class="inline-flex items-center gap-1 font-bold px-2 py-0.5 rounded-md bg-black/5 text-stone-700">
+                                        <span x-text="getLangFlag(note.language)"></span>
+                                        <span x-text="getLangName(note.language)"></span>
+                                    </span>
+
+                                    <span class="text-[11px] font-bold px-2 py-0.5 rounded-full flex items-center gap-1"
+                                          :class="note.isDue ? 'bg-terracotta text-white shadow-sm' : 'bg-black/5 text-stone-600'">
+                                        <span class="material-symbols-outlined [font-size:13px]">alarm</span>
+                                        <span x-text="note.isDue ? 'Hôm nay' : 'Stage ' + note.stage"></span>
+                                    </span>
+                                </div>
+
+                                <div class="my-auto py-2 text-center">
+                                    <h3 class="text-xl sm:text-2xl font-bold text-stone-900 leading-snug px-2"
+                                        :class="getLangFontClass(note.language)"
+                                        x-text="note.phrase"></h3>
+
+                                    <div class="text-xs font-mono text-stone-600 mt-2 bg-black/5 px-2.5 py-1 rounded-lg inline-block"
+                                         x-show="note.phonetic"
+                                         x-text="note.phonetic"></div>
+                                </div>
+
+                                <div class="pt-3 border-t border-black/10 flex items-center justify-between text-xs text-stone-600">
+                                    <span class="text-[11px] text-stone-500 italic">Lật để xem nghĩa 💡</span>
+
+                                    <div class="flex items-center gap-1.5">
+                                        <button type="button" @click.stop="playAudio(note)"
+                                                class="w-8 h-8 rounded-full bg-white/80 hover:bg-white text-stone-800 border border-stone-200 flex items-center justify-center transition shadow-sm hover:scale-105"
+                                                title="Nghe phát âm">
+                                            <span class="material-symbols-outlined [font-size:18px]">volume_up</span>
+                                        </button>
+
+                                        <button type="button" @click.stop="practiceSpeaking(note)"
+                                                :class="note.isSpeakingNow ? 'bg-emerald-600 text-white animate-pulse' : 'bg-pine text-white hover:bg-pine-dark'"
+                                                class="px-2.5 h-8 rounded-full text-xs font-bold transition shadow-sm flex items-center gap-1 hover:scale-105"
+                                                title="Luyện đọc câu này">
+                                            <span class="material-symbols-outlined [font-size:16px]">mic</span>
+                                            <span class="hidden sm:inline" x-text="note.isSpeakingNow ? 'Đang nghe...' : 'Luyện nói'"></span>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- BACK SIDE -->
+                            <div class="absolute inset-0 backface-hidden rotate-y-180 rounded-2xl p-5 border shadow-sticky flex flex-col justify-between paper-curl"
+                                 :class="colorMap[note.color].bg">
+                                <div :class="pinClassMap[note.pinStyle]"></div>
+                                <div class="cultural-stamp opacity-40" x-text="note.stampEmoji"></div>
+
+                                <div class="flex items-center justify-between text-xs pt-1 border-b border-black/10 pb-2">
+                                    <span class="font-bold text-stone-700">Giải Nghĩa Của Bạn</span>
+                                    <span class="text-[11px] text-stone-500">Chạm để lật lại</span>
+                                </div>
+
+                                <div class="my-auto space-y-2 py-2">
+                                    <div class="text-base sm:text-lg font-bold text-stone-900 leading-snug"
+                                         x-text="note.meaningVi"></div>
+
+                                    <p class="text-stone-800 font-caveat text-xl leading-snug border-l-2 border-stone-400/40 pl-2.5 py-0.5"
+                                       x-show="note.userNote"
+                                       x-text="'“' + note.userNote + '”'"></p>
+                                </div>
+
+                                <div class="pt-3 border-t border-black/10 flex items-center gap-2">
+                                    <button @click.stop="reviewNote(note, false)"
+                                            class="flex-1 py-1.5 px-2 rounded-xl bg-white/90 hover:bg-white text-rose-600 border border-rose-200 text-xs font-bold transition flex items-center justify-center gap-1 shadow-sm">
+                                        <span class="material-symbols-outlined [font-size:15px]">refresh</span>
+                                        <span>Chưa nhớ (Mai ôn)</span>
+                                    </button>
+
+                                    <button @click.stop="reviewNote(note, true)"
+                                            class="flex-1 py-1.5 px-2 rounded-xl bg-pine hover:bg-pine-dark text-white text-xs font-bold transition flex items-center justify-center gap-1 shadow-sm">
+                                        <span class="material-symbols-outlined [font-size:15px]">done_all</span>
+                                        <span>Đã thuộc!</span>
+                                    </button>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </template>
+            </div>
+        </div>
+
+        <!-- ============================================================ -->
+        <!-- VIEW 3: CÀI ĐẶT KHUNG GIỜ NHẮC LUYỆN & NOTIFICATIONS         -->
+        <!-- ============================================================ -->
+        <div x-show="currentTab === 'reminder_settings'" x-cloak class="max-w-2xl mx-auto px-4 py-8">
+            <div class="bg-white rounded-3xl border border-borderPaper p-6 sm:p-8 shadow-sm space-y-6">
+                <!-- Header -->
+                <div class="border-b border-stone-100 pb-4">
+                    <div class="flex items-center gap-2 text-pine font-bold text-xs uppercase tracking-wider mb-1">
+                        <span class="material-symbols-outlined [font-size:16px]">notifications_active</span>
+                        <span>Cơ Chế Nhắc Lịch Thông Minh</span>
+                    </div>
+                    <h2 class="text-xl sm:text-2xl font-extrabold text-stone-900">
+                        Cài Đặt Khung Giờ Ôn Luyện Hằng Ngày
+                    </h2>
+                    <p class="text-xs text-stone-600 mt-1">
+                        Hệ thống sẽ chỉ nhắc bạn đúng vào khung giờ bạn đã chọn khi có những tờ giấy note sắp rơi khỏi trí nhớ (theo đường cong Ebbinghaus).
+                    </p>
+                </div>
+
+                <!-- 1. Master Toggle -->
+                <div class="flex items-center justify-between p-4 rounded-2xl bg-sand border border-stone-200">
+                    <div>
+                        <strong class="text-sm font-bold text-stone-900 block">Bật thông báo nhắc ôn luyện</strong>
+                        <span class="text-xs text-stone-500">Nhận thông báo đẩy trên trình duyệt hoặc chuông thông báo web</span>
+                    </div>
+                    <label class="relative inline-flex items-center cursor-pointer">
+                        <input type="checkbox" x-model="reminderConfig.enabled" class="sr-only peer">
+                        <div class="w-11 h-6 bg-stone-300 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-stone-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-pine"></div>
+                    </label>
+                </div>
+
+                <!-- 2. Preset Time Slots -->
+                <div class="space-y-3" x-show="reminderConfig.enabled">
+                    <label class="font-bold text-xs text-stone-700 block uppercase tracking-wider">
+                        Chọn Khung Giờ Luyện Lại Phù Hợp Với Bạn
+                    </label>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                        <!-- Morning -->
+                        <button type="button"
+                                @click="reminderConfig.selectedTime = '07:30'"
+                                :class="reminderConfig.selectedTime === '07:30' ? 'border-pine bg-emerald-50 text-pine font-bold ring-2 ring-pine/20' : 'border-stone-200 bg-white text-stone-700'"
+                                class="p-3.5 rounded-2xl border text-left transition flex flex-col justify-between">
+                            <span class="text-lg">☀️ Sáng sớm</span>
+                            <span class="text-lg font-black mt-2">07:30</span>
+                            <span class="text-[10px] text-stone-500 mt-0.5">Khởi động ngày mới</span>
+                        </button>
+
+                        <!-- Noon -->
+                        <button type="button"
+                                @click="reminderConfig.selectedTime = '12:30'"
+                                :class="reminderConfig.selectedTime === '12:30' ? 'border-pine bg-emerald-50 text-pine font-bold ring-2 ring-pine/20' : 'border-stone-200 bg-white text-stone-700'"
+                                class="p-3.5 rounded-2xl border text-left transition flex flex-col justify-between">
+                            <span class="text-lg">🥪 Nghỉ trưa</span>
+                            <span class="text-lg font-black mt-2">12:30</span>
+                            <span class="text-[10px] text-stone-500 mt-0.5">Bóc note thư giãn 60s</span>
+                        </button>
+
+                        <!-- Evening (Default) -->
+                        <button type="button"
+                                @click="reminderConfig.selectedTime = '20:00'"
+                                :class="reminderConfig.selectedTime === '20:00' ? 'border-pine bg-emerald-50 text-pine font-bold ring-2 ring-pine/20' : 'border-stone-200 bg-white text-stone-700'"
+                                class="p-3.5 rounded-2xl border text-left transition flex flex-col justify-between">
+                            <span class="text-lg">🌙 Buổi tối</span>
+                            <span class="text-lg font-black mt-2">20:00</span>
+                            <span class="text-[10px] text-stone-500 mt-0.5">Ngấm sâu vào tiềm thức</span>
+                        </button>
+                    </div>
+
+                    <!-- Custom Time input -->
+                    <div class="pt-2 flex items-center gap-3">
+                        <span class="text-xs text-stone-600 font-medium">Hoặc tự chọn giờ chính xác:</span>
+                        <input type="time" x-model="reminderConfig.selectedTime"
+                               class="px-3 py-1.5 rounded-xl border border-stone-300 text-xs font-bold text-stone-800 focus:outline-none focus:ring-2 focus:ring-pine/30">
+                    </div>
+                </div>
+
+                <!-- 3. Days of the week -->
+                <div class="space-y-2 pt-2 border-t border-stone-100" x-show="reminderConfig.enabled">
+                    <label class="font-bold text-xs text-stone-700 block uppercase tracking-wider">
+                        Các Ngày Trong Tuần
+                    </label>
+                    <div class="flex items-center gap-1.5 flex-wrap">
+                        <template x-for="day in ['T2', 'T3', 'T4', 'T5', 'T6', 'T7', 'CN']" :key="day">
+                            <button type="button"
+                                    @click="toggleReminderDay(day)"
+                                    :class="reminderConfig.days.includes(day) ? 'bg-pine text-white font-bold' : 'bg-stone-100 text-stone-600 hover:bg-stone-200'"
+                                    class="w-10 h-10 rounded-xl text-xs transition flex items-center justify-center font-semibold"
+                                    x-text="day"></button>
+                        </template>
+                    </div>
+                </div>
+
+                <!-- 4. Interactive Test Web Push Button -->
+                <div class="p-4 rounded-2xl bg-amber-50/70 border border-amber-200 flex flex-col sm:flex-row sm:items-center justify-between gap-3"
+                     x-show="reminderConfig.enabled">
+                    <div>
+                        <span class="text-xs font-bold text-amber-950 block">Thử nghiệm Web Push Notification</span>
+                        <span class="text-[11px] text-amber-800">Bấm nút để trình duyệt bắn thử 1 thông báo mẫu về máy bạn ngay bây giờ</span>
+                    </div>
+                    <button type="button" @click="testBrowserPushNotification()"
+                            class="px-4 py-2 rounded-xl bg-amber-500 hover:bg-amber-600 text-stone-950 text-xs font-bold transition shadow-sm flex items-center gap-1.5 shrink-0 self-start sm:self-auto">
+                        <span class="material-symbols-outlined [font-size:16px]">send</span>
+                        <span>Bắn thông báo thử</span>
+                    </button>
+                </div>
+
+                <!-- Save settings -->
+                <div class="pt-4 border-t border-stone-100 flex items-center justify-end">
+                    <button @click="triggerToast('💾 Đã lưu cấu hình nhắc luyện lúc ' + reminderConfig.selectedTime + '!', '⏰')"
+                            class="px-6 py-2.5 rounded-xl bg-pine hover:bg-pine-dark text-white text-xs font-bold transition shadow-sm">
+                        Lưu Cài Đặt Nhắc Lịch
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- ============================================================ -->
+        <!-- VIEW 4: PHÂN TÍCH CHUYÊN SÂU: "CÓ TRẺ CON KHÔNG?"          -->
+        <!-- ============================================================ -->
+        <div x-show="currentTab === 'design_analysis'" x-cloak class="max-w-4xl mx-auto px-4 py-8">
+            <div class="bg-white rounded-3xl border border-borderPaper p-6 sm:p-10 shadow-sm space-y-8">
+                <div class="border-b border-stone-100 pb-6">
+                    <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-50 text-amber-900 border border-amber-200 text-xs font-bold mb-3">
+                        <span class="material-symbols-outlined [font-size:16px]">verified</span>
+                        <span>Phân Tích Thiết Kế & Tâm Lý Học Sản Phẩm</span>
+                    </div>
+                    <h1 class="text-2xl sm:text-3xl font-extrabold text-stone-900 leading-tight">
+                        "Làm style ghim & dấu ấn văn hóa này có bị TRẺ CON không?"
+                    </h1>
+                    <p class="text-sm text-stone-600 mt-2 leading-relaxed">
+                        Đánh giá thẳng thắn góc nhìn Product Design, tâm lý học thần kinh (Cognitive Psychology) và đối chiếu với các sản phẩm thành công trên toàn cầu.
+                    </p>
+                </div>
+
+                <div class="p-5 rounded-2xl bg-emerald-50/70 border border-emerald-200 text-stone-800 space-y-2">
+                    <h3 class="text-base font-bold text-pine flex items-center gap-2">
+                        <span class="material-symbols-outlined">check_circle</span>
+                        <span>KẾT LUẬN: KHÔNG HỀ TRẺ CON – NẾU ĐƯỢC THIẾT KẾ ĐÚNG PHONG CÁCH "CURATED STATIONERY"</span>
+                    </h3>
+                    <p class="text-xs sm:text-sm text-stone-700 leading-relaxed">
+                        Sự khác biệt giữa <strong>"Trẻ con (Juvenile/Childish)"</strong> và <strong>"Cá nhân hóa ấm áp (Curated Warmth)"</strong> hoàn toàn nằm ở <strong>ngôn ngữ thị giác (Visual Language)</strong> và <strong>quyền chủ động của người dùng (User Agency)</strong>.
+                    </p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="p-5 rounded-2xl bg-rose-50/60 border border-rose-200 space-y-3">
+                        <div class="flex items-center gap-2 text-rose-800 font-bold text-sm">
+                            <span class="material-symbols-outlined">cancel</span>
+                            <span>CÁCH LÀM KHIẾN BỊ "TRẺ CON"</span>
+                        </div>
+                        <ul class="text-xs text-rose-950 space-y-2 list-disc pl-4 leading-relaxed">
+                            <li>Hình vẽ hoạt hình to đùng, mắt tròn xoe, màu dạ quang neon sặc sỡ kiểu game mầm non.</li>
+                            <li>Bắt buộc người lớn phải dùng icon gấu mèo, âm thanh chuông leng keng trẻ con reo hò.</li>
+                            <li>Ép người học vào khuôn mẫu định sẵn, không cho phép gõ tự do theo suy nghĩ của mình.</li>
+                        </ul>
+                    </div>
+
+                    <div class="p-5 rounded-2xl bg-pine/5 border border-pine/30 space-y-3">
+                        <div class="flex items-center gap-2 text-pine font-bold text-sm">
+                            <span class="material-symbols-outlined">stars</span>
+                            <span>CÁCH MỞ LỜI ĐANG LÀM: CAO CẤP & TINH TẾ</span>
+                        </div>
+                        <ul class="text-xs text-stone-800 space-y-2 list-disc pl-4 leading-relaxed">
+                            <li><strong>Phong cách Hobonichi Techo & Midori (Nhật Bản):</strong> Lấy cảm hứng từ văn hóa sổ tay da, giấy kraft, băng dính washi và con dấu du hành.</li>
+                            <li><strong>Chi tiết nhỏ gọn (Micro-accents):</strong> Dấu mộc (Lẩu 🍲, Hoa anh đào 🌸, Núi Phú Sĩ 🗻) chỉ nhỏ 18-20px nằm khiêm tốn ở góc như một con dấu hộ chiếu lưu niệm.</li>
+                            <li><strong>Style Ghim đa dạng:</strong> Có sẵn kim ghim đồng cổ điển, ghim bạc tối giản, kẹp giấy kim loại sang trọng cho ai thích phong cách Minimalist sạch sẽ.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- ============================================================ -->
+    <!-- MODAL TẠO NOTE (TÁI SỬ DỤNG CHO CẢ SUMMARY LẪN BẢNG NOTE)    -->
+    <!-- ============================================================ -->
+    <div x-show="showCreateModal" x-cloak
+         class="fixed inset-0 z-50 flex items-center justify-center bg-stone-900/60 backdrop-blur-sm p-4 overflow-y-auto">
+        <div class="bg-white rounded-3xl max-w-lg w-full p-6 sm:p-7 shadow-2xl border border-borderPaper relative transform transition-all my-8">
+            <div class="flex items-center justify-between mb-4 pb-3 border-b border-stone-100">
+                <div class="flex items-center gap-2">
+                    <span class="w-8 h-8 rounded-xl bg-amber-100 text-amber-800 flex items-center justify-center">
+                        <span class="material-symbols-outlined [font-size:18px]">edit_note</span>
+                    </span>
+                    <h3 class="text-base font-bold text-stone-900">Ghim Giấy Note Mới</h3>
+                </div>
+                <button @click="showCreateModal = false" class="text-stone-400 hover:text-stone-700">
+                    <span class="material-symbols-outlined">close</span>
+                </button>
+            </div>
+
+            <div class="space-y-4 text-xs">
+                <!-- 1. Language Picker -->
+                <div>
+                    <label class="font-bold text-stone-700 block mb-1">Ngôn ngữ</label>
+                    <div class="grid grid-cols-5 gap-2">
+                        <template x-for="l in availableLanguages" :key="l.code">
+                            <button type="button"
+                                    @click="newNoteData.language = l.code; autoSuggestStamps(l.code)"
+                                    :class="newNoteData.language === l.code ? 'border-pine bg-emerald-50 text-pine font-bold ring-2 ring-pine/20' : 'border-stone-200 text-stone-700 bg-white'"
+                                    class="p-2 rounded-xl border text-center transition flex flex-col items-center">
+                                <span class="text-lg" x-text="l.flag"></span>
+                                <span class="text-[11px] truncate mt-0.5" x-text="l.name"></span>
+                            </button>
+                        </template>
+                    </div>
+                </div>
+
+                <!-- 2. Phrase -->
+                <div>
+                    <label class="font-bold text-stone-700 block mb-1">Cụm từ / Câu gốc</label>
+                    <input type="text" x-model="newNoteData.phrase" placeholder="Ví dụ: お会計を別々で / 麻烦少冰..."
+                           class="w-full px-3.5 py-2.5 rounded-xl border border-stone-300 text-sm font-semibold text-stone-900 focus:outline-none focus:ring-2 focus:ring-pine/30">
+                </div>
+
+                <!-- 3. Phonetic -->
+                <div>
+                    <label class="font-bold text-stone-700 block mb-1">Phiên âm (Romaji / Pinyin / IPA)</label>
+                    <input type="text" x-model="newNoteData.phonetic" placeholder="Ví dụ: Okaikei o betsubetsu de onegaishimasu"
+                           class="w-full px-3.5 py-2 rounded-xl border border-stone-200 text-xs font-mono text-stone-700 focus:outline-none focus:ring-2 focus:ring-pine/30">
+                </div>
+
+                <!-- 4. Meaning in User's words -->
+                <div>
+                    <label class="font-bold text-stone-700 block mb-1">
+                        Ý nghĩa bằng lời của bạn <span class="text-terracotta font-semibold">* Quan trọng</span>
+                    </label>
+                    <input type="text" x-model="newNoteData.meaningVi" placeholder="Ví dụ: Xin tính tiền riêng từng người giúp nhé"
+                           class="w-full px-3.5 py-2.5 rounded-xl border border-stone-300 text-xs font-semibold text-stone-900 focus:outline-none focus:ring-2 focus:ring-pine/30">
+                </div>
+
+                <!-- 5. Personal Note -->
+                <div>
+                    <label class="font-bold text-stone-700 block mb-1">Ghi chú riêng của bạn</label>
+                    <textarea x-model="newNoteData.userNote" rows="2" placeholder="Ví dụ: Dùng khi đi ăn với bạn bè người Nhật..."
+                              class="w-full px-3.5 py-2 rounded-xl border border-stone-200 text-xs text-stone-700 focus:outline-none focus:ring-2 focus:ring-pine/30 resize-none font-hand text-sm"></textarea>
+                </div>
+
+                <!-- 6. Style Personalization -->
+                <div class="pt-3 border-t border-stone-100 space-y-3">
+                    <span class="font-bold text-stone-900 block text-xs uppercase tracking-wider text-pine">
+                        Tùy Biến Cá Nhân Hóa Tờ Giấy Note
+                    </span>
+
+                    <!-- Color -->
+                    <div>
+                        <span class="text-stone-600 font-medium block mb-1">Màu giấy note</span>
+                        <div class="flex items-center gap-2">
+                            <template x-for="c in colorList" :key="c.id">
+                                <button type="button"
+                                        @click="newNoteData.color = c.id"
+                                        :class="newNoteData.color === c.id ? 'ring-2 ring-stone-900 scale-110' : 'hover:scale-105'"
+                                        :style="'background-color: ' + c.hex"
+                                        :title="c.label"
+                                        class="w-7 h-7 rounded-full border border-stone-300 transition-all shadow-sm"></button>
+                            </template>
+                        </div>
+                    </div>
+
+                    <!-- Pin Style -->
+                    <div>
+                        <span class="text-stone-600 font-medium block mb-1">Kiểu ghim / Dán</span>
+                        <div class="grid grid-cols-3 gap-2">
+                            <template x-for="p in pinOptions" :key="p.id">
+                                <button type="button"
+                                        @click="newNoteData.pinStyle = p.id"
+                                        :class="newNoteData.pinStyle === p.id ? 'border-pine bg-emerald-50 text-pine font-bold' : 'border-stone-200 text-stone-700 bg-white'"
+                                        class="p-2 rounded-xl border text-center transition flex items-center justify-center gap-1.5">
+                                    <span x-text="p.icon"></span>
+                                    <span class="text-[11px]" x-text="p.name"></span>
+                                </button>
+                            </template>
+                        </div>
+                    </div>
+
+                    <!-- Stamp -->
+                    <div>
+                        <span class="text-stone-600 font-medium block mb-1">Dấu ấn văn hóa</span>
+                        <div class="flex items-center gap-2 flex-wrap">
+                            <template x-for="st in suggestedStamps" :key="st.emoji">
+                                <button type="button"
+                                        @click="newNoteData.stampEmoji = st.emoji; newNoteData.stampName = st.name"
+                                        :class="newNoteData.stampEmoji === st.emoji ? 'border-amber-500 bg-amber-50 scale-110 shadow-sm' : 'border-stone-200 bg-white hover:bg-stone-50'"
+                                        class="px-2.5 py-1 rounded-xl border transition flex items-center gap-1 text-sm">
+                                    <span x-text="st.emoji"></span>
+                                    <span class="text-[10px] text-stone-600" x-text="st.name"></span>
+                                </button>
+                            </template>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Modal Footer -->
+            <div class="mt-6 pt-3 border-t border-stone-100 flex items-center justify-end gap-2.5">
+                <button @click="showCreateModal = false" class="px-4 py-2 rounded-xl text-xs font-semibold text-stone-600 hover:bg-stone-100">
+                    Hủy
+                </button>
+                <button @click="saveCustomNote()" class="px-5 py-2.5 rounded-xl bg-pine hover:bg-pine-dark text-white text-xs font-bold transition shadow-sm flex items-center gap-1.5">
+                    <span class="material-symbols-outlined [font-size:16px]">push_pin</span>
+                    <span>Lưu Giấy Note Ngay</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL FOCUS REVIEW 60S -->
+    <div x-show="showFocusReviewModal" x-cloak
+         class="fixed inset-0 z-50 flex items-center justify-center bg-stone-900/70 backdrop-blur-md p-4">
+        <div class="max-w-md w-full text-center relative">
+            <button @click="showFocusReviewModal = false" class="absolute -top-12 right-0 text-white/80 hover:text-white flex items-center gap-1 text-xs">
+                <span>Đóng</span>
+                <span class="material-symbols-outlined">close</span>
+            </button>
+
+            <div class="mb-4 text-xs font-semibold text-white/80 flex items-center justify-between px-2">
+                <span>Phiên bóc note hôm nay</span>
+                <span><strong x-text="reviewIndex + 1"></strong> / <span x-text="reviewDeck.length"></span> tờ</span>
+            </div>
+
+            <template x-if="reviewDeck.length > 0 && reviewIndex < reviewDeck.length">
+                <div class="perspective-1000">
+                    <div class="relative transition-transform duration-500 transform-style-3d h-84 rounded-3xl cursor-pointer"
+                         :class="{ 'rotate-y-180': isReviewFlipped }"
+                         @click="isReviewFlipped = !isReviewFlipped">
+
+                        <!-- Front -->
+                        <div class="absolute inset-0 backface-hidden rounded-3xl p-6 border shadow-2xl flex flex-col justify-between"
+                             :class="colorMap[reviewDeck[reviewIndex].color].bg">
+                            <div :class="pinClassMap[reviewDeck[reviewIndex].pinStyle]"></div>
+                            <div class="cultural-stamp text-2xl" x-text="reviewDeck[reviewIndex].stampEmoji"></div>
+
+                            <div class="flex items-center justify-between text-xs pt-2">
+                                <span class="font-bold text-stone-700 flex items-center gap-1">
+                                    <span x-text="getLangFlag(reviewDeck[reviewIndex].language)"></span>
+                                    <span x-text="getLangName(reviewDeck[reviewIndex].language)"></span>
+                                </span>
+                                <span class="px-2 py-0.5 rounded-full bg-black/5 text-stone-600 text-[11px] font-bold">
+                                    Stage <span x-text="reviewDeck[reviewIndex].stage"></span>
+                                </span>
+                            </div>
+
+                            <div class="my-auto py-2">
+                                <span class="text-xs uppercase tracking-wider text-stone-500 font-bold block mb-2">Thử phát âm & nhớ nghĩa:</span>
+                                <h2 class="text-2xl sm:text-3xl font-extrabold text-stone-900 leading-snug"
+                                    :class="getLangFontClass(reviewDeck[reviewIndex].language)"
+                                    x-text="reviewDeck[reviewIndex].phrase"></h2>
+                                
+                                <div class="text-xs font-mono text-stone-600 mt-3 bg-black/5 px-3 py-1.5 rounded-lg inline-block"
+                                     x-show="reviewDeck[reviewIndex].phonetic"
+                                     x-text="reviewDeck[reviewIndex].phonetic"></div>
+                            </div>
+
+                            <div class="pt-3 border-t border-black/10 flex items-center justify-between text-xs text-stone-600">
+                                <span class="italic">Chạm để lật xem đáp án 💡</span>
+                                <button @click.stop="playAudio(reviewDeck[reviewIndex])"
+                                        class="w-8 h-8 rounded-full bg-black/10 hover:bg-black/20 flex items-center justify-center text-stone-900 transition">
+                                    <span class="material-symbols-outlined [font-size:18px]">volume_up</span>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Back -->
+                        <div class="absolute inset-0 backface-hidden rotate-y-180 rounded-3xl p-6 border shadow-2xl flex flex-col justify-between"
+                             :class="colorMap[reviewDeck[reviewIndex].color].bg">
+                            <div :class="pinClassMap[reviewDeck[reviewIndex].pinStyle]"></div>
+
+                            <div class="text-xs font-bold text-stone-700 pt-2 border-b border-black/10 pb-2">
+                                Ý nghĩa do bạn ghi chú
+                            </div>
+
+                            <div class="my-auto space-y-3 py-2">
+                                <div class="text-xl font-bold text-stone-900" x-text="reviewDeck[reviewIndex].meaningVi"></div>
+                                <p class="text-stone-800 font-caveat text-2xl"
+                                   x-show="reviewDeck[reviewIndex].userNote"
+                                   x-text="'“' + reviewDeck[reviewIndex].userNote + '”'"></p>
+                            </div>
+
+                            <div class="text-xs text-stone-500 italic">
+                                Bạn đã nhớ chuẩn xác câu này chưa?
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </template>
+
+            <template x-if="reviewDeck.length > 0 && reviewIndex < reviewDeck.length">
+                <div class="mt-6 flex items-center gap-4">
+                    <button @click="processDeckAction(false)"
+                            class="flex-1 py-3 px-4 rounded-2xl bg-white hover:bg-rose-50 text-rose-600 font-bold text-sm border border-rose-200 transition shadow-lg flex items-center justify-center gap-2">
+                        <span class="material-symbols-outlined">restart_alt</span>
+                        <span>Vẫn vấp (Hẹn mai)</span>
+                    </button>
+                    <button @click="processDeckAction(true)"
+                            class="flex-1 py-3 px-4 rounded-2xl bg-pine hover:bg-pine-dark text-white font-bold text-sm transition shadow-lg shadow-pine/30 flex items-center justify-center gap-2">
+                        <span class="material-symbols-outlined">done_all</span>
+                        <span>Đã thuộc! (Lên Stage)</span>
+                    </button>
+                </div>
+            </template>
+
+            <template x-if="reviewIndex >= reviewDeck.length">
+                <div class="bg-white rounded-3xl p-8 border border-borderPaper shadow-2xl text-center space-y-4">
+                    <div class="w-16 h-16 rounded-full bg-emerald-100 text-pine flex items-center justify-center mx-auto">
+                        <span class="material-symbols-outlined [font-size:32px]">task_alt</span>
+                    </div>
+                    <h3 class="text-xl font-bold text-stone-900">Hoàn thành xuất sắc 60 giây hôm nay!</h3>
+                    <p class="text-xs text-stone-600 max-w-xs mx-auto leading-relaxed">
+                        Bạn đã kích hoạt thành công chu kỳ củng cố trí nhớ ngắt quãng. Cùng quay lại vào ngày mai nhé!
+                    </p>
+                    <button @click="showFocusReviewModal = false" class="mt-2 px-6 py-2.5 rounded-xl bg-pine text-white text-xs font-bold">
+                        Quay lại bảng dán
+                    </button>
+                </div>
+            </template>
+        </div>
+    </div>
+
+    <!-- TOAST NOTIFICATION -->
+    <div x-show="toast.show" x-cloak
+         x-transition:enter="transition ease-out duration-300"
+         x-transition:enter-start="opacity-0 translate-y-4"
+         x-transition:enter-end="opacity-100 translate-y-0"
+         x-transition:leave="transition ease-in duration-200"
+         x-transition:leave-start="opacity-100 translate-y-0"
+         x-transition:leave-end="opacity-0 translate-y-4"
+         class="fixed bottom-6 right-6 z-50 bg-stone-900 text-white px-4 py-3 rounded-2xl shadow-xl flex items-center gap-3 text-xs border border-white/10">
+        <span class="text-lg" x-text="toast.icon || '📌'"></span>
+        <span x-text="toast.message"></span>
+    </div>
+
+    <!-- ALPINE JS APP SCRIPT -->
+    <script>
+        function noteJournalApp() {
+            return {
+                currentTab: 'summary_flow', // 'summary_flow' | 'board' | 'reminder_settings' | 'design_analysis'
+                activeLang: 'all',
+                activeStatus: 'all',
+                showCreateModal: false,
+                showFocusReviewModal: false,
+                isReviewFlipped: false,
+                reviewIndex: 0,
+                reviewDeck: [],
+
+                // Reminder Settings State
+                reminderConfig: {
+                    enabled: true,
+                    selectedTime: '20:00',
+                    days: ['T2', 'T3', 'T4', 'T5', 'T6', 'T7', 'CN']
+                },
+
+                toast: {
+                    show: false,
+                    message: '',
+                    icon: '📌'
+                },
+
+                triggerToast(msg, icon = '📌') {
+                    this.toast.message = msg;
+                    this.toast.icon = icon;
+                    this.toast.show = true;
+                    setTimeout(() => { this.toast.show = false; }, 3500);
+                },
+
+                toggleReminderDay(day) {
+                    const idx = this.reminderConfig.days.indexOf(day);
+                    if (idx > -1) {
+                        this.reminderConfig.days.splice(idx, 1);
+                    } else {
+                        this.reminderConfig.days.push(day);
+                    }
+                },
+
+                // Test Web Push Notification using Browser Notification API
+                testBrowserPushNotification() {
+                    if (!("Notification" in window)) {
+                        alert("Trình duyệt không hỗ trợ Web Notification.");
+                        return;
+                    }
+
+                    if (Notification.permission === "granted") {
+                        new Notification("mở lời. 📌 Giờ ôn luyện 20:00", {
+                            body: "Bạn có 3 tờ giấy note sắp rơi khỏi trí nhớ! Dành 60 giây bóc ngay nhé.",
+                            icon: "https://cdn-icons-png.flaticon.com/512/3208/3208726.png"
+                        });
+                        this.triggerToast("🔔 Đã bắn thông báo đẩy trình duyệt thành công!", "🎉");
+                    } else if (Notification.permission !== "denied") {
+                        Notification.requestPermission().then(permission => {
+                            if (permission === "granted") {
+                                new Notification("mở lời. 📌 Giờ ôn luyện 20:00", {
+                                    body: "Bạn có 3 tờ giấy note sắp rơi khỏi trí nhớ! Dành 60 giây bóc ngay nhé.",
+                                    icon: "https://cdn-icons-png.flaticon.com/512/3208/3208726.png"
+                                });
+                                this.triggerToast("🔔 Đã cấp quyền và bắn thông báo mẫu!", "🎉");
+                            }
+                        });
+                    } else {
+                        alert("Quyền thông báo đang bị chặn trong trình duyệt. Vui lòng bật lại trong cài đặt.");
+                    }
+                },
+
+                // Languages
+                availableLanguages: [
+                    { code: 'ja', flag: '🇯🇵', name: 'Tiếng Nhật', ttsLocale: 'ja-JP', fontClass: 'font-jp' },
+                    { code: 'zh', flag: '🇨🇳', name: 'Tiếng Trung', ttsLocale: 'zh-CN', fontClass: 'font-sc' },
+                    { code: 'ko', flag: '🇰🇷', name: 'Tiếng Hàn', ttsLocale: 'ko-KR', fontClass: 'font-kr' },
+                    { code: 'en', flag: '🇬🇧', name: 'Tiếng Anh', ttsLocale: 'en-US', fontClass: 'font-sans' },
+                    { code: 'es', flag: '🇪🇸', name: 'Tây Ban Nha', ttsLocale: 'es-ES', fontClass: 'font-sans' },
+                ],
+
+                // Pastel Colors
+                colorList: [
+                    { id: 'yellow', hex: '#FEF08A', label: 'Vàng Chanh' },
+                    { id: 'mint', hex: '#BBF7D0', label: 'Xanh Mint' },
+                    { id: 'peach', hex: '#FED7AA', label: 'Cam Đào' },
+                    { id: 'pink', hex: '#FBCFE8', label: 'Hồng Phấn' },
+                    { id: 'lavender', hex: '#E9D5FF', label: 'Tím Lavender' },
+                ],
+
+                colorMap: {
+                    yellow: { bg: 'bg-[#FEF9C3] border-amber-200/80' },
+                    mint: { bg: 'bg-[#ECFDF5] border-emerald-200/80' },
+                    peach: { bg: 'bg-[#FFF7ED] border-orange-200/80' },
+                    pink: { bg: 'bg-[#FDF2F8] border-rose-200/80' },
+                    lavender: { bg: 'bg-[#F5F3FF] border-purple-200/80' },
+                },
+
+                // Pin Styles
+                pinOptions: [
+                    { id: 'thumbtack_brass', name: 'Đồng Cổ', icon: '🟡' },
+                    { id: 'thumbtack_silver', name: 'Bạc Tối Giản', icon: '⚪' },
+                    { id: 'thumbtack_red', name: 'Ghim Đỏ', icon: '🔴' },
+                    { id: 'washi_kraft', name: 'Băng Giấy Kraft', icon: '📜' },
+                    { id: 'washi_caro', name: 'Washi Pastel', icon: '🎀' },
+                    { id: 'paperclip', name: 'Kẹp Giấy', icon: '📎' },
+                ],
+
+                pinClassMap: {
+                    thumbtack_brass: 'pin-thumbtack-brass',
+                    thumbtack_silver: 'pin-thumbtack-silver',
+                    thumbtack_red: 'pin-thumbtack-red',
+                    washi_kraft: 'pin-washi-kraft',
+                    washi_caro: 'pin-washi-caro',
+                    paperclip: 'pin-paperclip',
+                },
+
+                culturalStampsMap: {
+                    ja: [
+                        { emoji: '🌸', name: 'Hoa anh đào' },
+                        { emoji: '🗻', name: 'Núi Phú Sĩ' },
+                        { emoji: '🍜', name: 'Ramen' },
+                        { emoji: '⚔️', name: 'Samurai' },
+                    ],
+                    zh: [
+                        { emoji: '🍲', name: 'Lẩu Tứ Xuyên' },
+                        { emoji: '🐼', name: 'Gấu trúc' },
+                        { emoji: '🍵', name: 'Trà đạo' },
+                        { emoji: '🏮', name: 'Đèn lồng' },
+                    ],
+                    ko: [
+                        { emoji: '🥬', name: 'Kimchi' },
+                        { emoji: '🍙', name: 'Kimbap' },
+                        { emoji: '🗼', name: 'Tháp Seoul' },
+                    ],
+                    es: [
+                        { emoji: '💃', name: 'Flamenco' },
+                        { emoji: '🥘', name: 'Paella' },
+                        { emoji: '🍊', name: 'Cam Valencia' },
+                    ],
+                    en: [
+                        { emoji: '🫖', name: 'Trà Bá Tước' },
+                        { emoji: '☕', name: 'Takeaway Cup' },
+                        { emoji: '🚌', name: 'Bus London' },
+                    ]
+                },
+
+                suggestedStamps: [],
+
+                notes: [
+                    {
+                        id: 1,
+                        language: 'zh',
+                        phrase: '一口吃不成胖子',
+                        phonetic: 'Yī kǒu chī bù chéng pàngzi',
+                        meaningVi: 'Dục tốc bất đạt, việc gì cũng cần tích lũy từng chút một',
+                        userNote: 'Học ngoại ngữ mỗi ngày một chút, đừng nóng vội nản lòng!',
+                        color: 'yellow',
+                        pinStyle: 'washi_kraft',
+                        stampEmoji: '🍲',
+                        stampName: 'Lẩu Tứ Xuyên',
+                        stage: 1,
+                        isDue: true,
+                        tiltClass: '-rotate-1',
+                        isFlipped: false,
+                        isSpeakingNow: false,
+                    },
+                    {
+                        id: 2,
+                        language: 'ja',
+                        phrase: '一期一会',
+                        phonetic: 'Ichigo ichie',
+                        meaningVi: 'Đời người chỉ gặp một lần (Hãy trân trọng từng khoảnh khắc gặp gỡ)',
+                        userNote: 'Thành ngữ trà đạo Nhật Bản cực kỳ ý nghĩa khi chào tạm biệt bạn bè',
+                        color: 'mint',
+                        pinStyle: 'thumbtack_brass',
+                        stampEmoji: '🌸',
+                        stampName: 'Hoa anh đào',
+                        stage: 2,
+                        isDue: true,
+                        tiltClass: 'rotate-2',
+                        isFlipped: false,
+                        isSpeakingNow: false,
+                    },
+                    {
+                        id: 3,
+                        language: 'zh',
+                        phrase: '麻烦帮我少冰，微糖',
+                        phonetic: 'Máfan bāng wǒ shǎo bīng, wēi táng',
+                        meaningVi: 'Làm ơn cho tôi 30% đá và 30% đường nhé',
+                        userNote: 'Bảo bối thần thánh khi đi Đài Loan/Trung Quốc gọi trà sữa trân châu',
+                        color: 'peach',
+                        pinStyle: 'paperclip',
+                        stampEmoji: '🐼',
+                        stampName: 'Gấu trúc',
+                        stage: 1,
+                        isDue: true,
+                        tiltClass: '-rotate-2',
+                        isFlipped: false,
+                        isSpeakingNow: false,
+                    },
+                    {
+                        id: 4,
+                        language: 'ko',
+                        phrase: '눈치가 빠르다',
+                        phonetic: 'Nunchi-ga ppareuda',
+                        meaningVi: 'Người rất tinh ý, biết nhìn trước ngó sau và nắm bắt tâm lý người khác',
+                        userNote: 'Văn hóa Nunchi độc nhất vô nhị của người Hàn Quốc khi đi làm công sở',
+                        color: 'pink',
+                        pinStyle: 'washi_caro',
+                        stampEmoji: '🥬',
+                        stampName: 'Kimchi',
+                        stage: 3,
+                        isDue: false,
+                        tiltClass: 'rotate-1',
+                        isFlipped: false,
+                        isSpeakingNow: false,
+                    },
+                    {
+                        id: 5,
+                        language: 'ja',
+                        phrase: '武士道とは死ぬことと見つけたり',
+                        phonetic: 'Bushidō to wa shinu koto to mitsuketari',
+                        meaningVi: 'Tinh thần võ sĩ đạo: Sống hết mình không hối tiếc',
+                        userNote: 'Câu nói kinh điển trong sách Hagakure',
+                        color: 'lavender',
+                        pinStyle: 'thumbtack_silver',
+                        stampEmoji: '⚔️',
+                        stampName: 'Samurai',
+                        stage: 5,
+                        isDue: false,
+                        tiltClass: '-rotate-1',
+                        isFlipped: false,
+                        isSpeakingNow: false,
+                    }
+                ],
+
+                newNoteData: {
+                    language: 'ja',
+                    phrase: '',
+                    phonetic: '',
+                    meaningVi: '',
+                    userNote: '',
+                    color: 'yellow',
+                    pinStyle: 'thumbtack_brass',
+                    stampEmoji: '🌸',
+                    stampName: 'Hoa anh đào'
+                },
+
+                init() {
+                    this.autoSuggestStamps(this.newNoteData.language);
+                },
+
+                autoSuggestStamps(lang) {
+                    this.suggestedStamps = this.culturalStampsMap[lang] || this.culturalStampsMap.en;
+                    if (this.suggestedStamps.length > 0) {
+                        this.newNoteData.stampEmoji = this.suggestedStamps[0].emoji;
+                        this.newNoteData.stampName = this.suggestedStamps[0].name;
+                    }
+                },
+
+                get dueCount() {
+                    return this.notes.filter(n => n.isDue && n.stage < 5).length;
+                },
+                get masteredCount() {
+                    return this.notes.filter(n => n.stage >= 5).length;
+                },
+
+                countByLang(code) {
+                    return this.notes.filter(n => n.language === code).length;
+                },
+
+                get filteredNotes() {
+                    return this.notes.filter(n => {
+                        if (this.activeLang !== 'all' && n.language !== this.activeLang) return false;
+                        if (this.activeStatus === 'due') return n.isDue && n.stage < 5;
+                        if (this.activeStatus === 'mastered') return n.stage >= 5;
+                        return true;
+                    });
+                },
+
+                getLangFlag(code) {
+                    const l = this.availableLanguages.find(x => x.code === code);
+                    return l ? l.flag : '🌐';
+                },
+                getLangName(code) {
+                    const l = this.availableLanguages.find(x => x.code === code);
+                    return l ? l.name : code;
+                },
+                getLangLocale(code) {
+                    const l = this.availableLanguages.find(x => x.code === code);
+                    return l ? l.ttsLocale : 'en-US';
+                },
+                getLangFontClass(code) {
+                    const l = this.availableLanguages.find(x => x.code === code);
+                    return l ? l.fontClass : 'font-sans';
+                },
+
+                toggleFlip(note) {
+                    note.isFlipped = !note.isFlipped;
+                },
+
+                playAudio(note) {
+                    if ('speechSynthesis' in window) {
+                        window.speechSynthesis.cancel();
+                        const u = new SpeechSynthesisUtterance(note.phrase);
+                        u.lang = this.getLangLocale(note.language);
+                        u.rate = 0.88;
+                        window.speechSynthesis.speak(u);
+                        this.triggerToast(`🔊 Đang đọc: "${note.phrase.substring(0, 16)}..."`, '🔊');
+                    }
+                },
+
+                practiceSpeaking(note) {
+                    if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
+                        alert('Trình duyệt của bạn chưa hỗ trợ Web Speech API mic. Vui lòng thử trên Chrome.');
+                        return;
+                    }
+
+                    const SpeechRec = window.SpeechRecognition || window.webkitSpeechRecognition;
+                    const recognition = new SpeechRec();
+                    recognition.lang = this.getLangLocale(note.language);
+                    recognition.interimResults = false;
+                    recognition.maxAlternatives = 1;
+
+                    note.isSpeakingNow = true;
+                    this.triggerToast('🎙️ Hãy nói to câu này vào mic...', '🎙️');
+
+                    recognition.onresult = (event) => {
+                        const transcript = event.results[0][0].transcript;
+                        note.isSpeakingNow = false;
+                        this.triggerToast(`👏 Bạn vừa nói: "${transcript}". Phát âm rất chuẩn!`, '🎉');
+                    };
+
+                    recognition.onerror = (e) => {
+                        note.isSpeakingNow = false;
+                        this.triggerToast('Chưa nghe rõ âm thanh, hãy thử bấm nói lại nhé!', '⚠️');
+                    };
+
+                    recognition.onend = () => {
+                        note.isSpeakingNow = false;
+                    };
+
+                    try {
+                        recognition.start();
+                    } catch (e) {
+                        note.isSpeakingNow = false;
+                    }
+                },
+
+                // Open create modal
+                openCreateModal() {
+                    this.newNoteData = {
+                        language: this.activeLang !== 'all' ? this.activeLang : 'ja',
+                        phrase: '',
+                        phonetic: '',
+                        meaningVi: '',
+                        userNote: '',
+                        color: 'yellow',
+                        pinStyle: 'thumbtack_brass',
+                        stampEmoji: '🌸',
+                        stampName: 'Hoa anh đào'
+                    };
+                    this.autoSuggestStamps(this.newNoteData.language);
+                    this.showCreateModal = true;
+                },
+
+                openCreateModalFromSummary() {
+                    this.newNoteData = {
+                        language: 'ja',
+                        phrase: '',
+                        phonetic: '',
+                        meaningVi: '',
+                        userNote: 'Ghim sau phiên luyện Quán Cà Phê với Kenji',
+                        color: 'peach',
+                        pinStyle: 'washi_kraft',
+                        stampEmoji: '🌸',
+                        stampName: 'Hoa anh đào'
+                    };
+                    this.autoSuggestStamps('ja');
+                    this.showCreateModal = true;
+                },
+
+                quickPinFromTurn(phrase, phonetic, meaning, lang) {
+                    this.newNoteData = {
+                        language: lang,
+                        phrase: phrase,
+                        phonetic: phonetic,
+                        meaningVi: meaning,
+                        userNote: 'Gợi ý bản xứ từ phiên luyện Quán Cà Phê',
+                        color: 'yellow',
+                        pinStyle: 'thumbtack_brass',
+                        stampEmoji: '🌸',
+                        stampName: 'Hoa anh đào'
+                    };
+                    this.autoSuggestStamps(lang);
+                    this.showCreateModal = true;
+                },
+
+                saveCustomNote() {
+                    if (!this.newNoteData.phrase.trim()) {
+                        alert('Vui lòng nhập cụm từ / câu gốc');
+                        return;
+                    }
+                    if (!this.newNoteData.meaningVi.trim()) {
+                        alert('Vui lòng nhập giải nghĩa theo lời của bạn');
+                        return;
+                    }
+
+                    const tilts = ['-rotate-1', 'rotate-1', '-rotate-2', 'rotate-2'];
+                    const randomTilt = tilts[Math.floor(Math.random() * tilts.length)];
+
+                    this.notes.unshift({
+                        id: Date.now(),
+                        language: this.newNoteData.language,
+                        phrase: this.newNoteData.phrase,
+                        phonetic: this.newNoteData.phonetic,
+                        meaningVi: this.newNoteData.meaningVi,
+                        userNote: this.newNoteData.userNote,
+                        color: this.newNoteData.color,
+                        pinStyle: this.newNoteData.pinStyle,
+                        stampEmoji: this.newNoteData.stampEmoji,
+                        stampName: this.newNoteData.stampName,
+                        stage: 1,
+                        isDue: true,
+                        tiltClass: randomTilt,
+                        isFlipped: false,
+                        isSpeakingNow: false,
+                    });
+
+                    this.showCreateModal = false;
+                    this.triggerToast('📌 Đã dán giấy note thành công! Hẹn bạn ôn lại vào ngày mai.', '✨');
+                },
+
+                reviewNote(note, remembered) {
+                    if (remembered) {
+                        note.stage = Math.min(5, note.stage + 1);
+                        note.isDue = false;
+                        if (note.stage >= 5) {
+                            this.triggerToast('🎉 Chúc mừng! Bạn đã thuộc làu câu này (Mastered).', '🏆');
+                        } else {
+                            const days = [0, 1, 3, 7, 14, 30][note.stage];
+                            this.triggerToast(`✨ Note đã lên Stage ${note.stage} (Hẹn ôn sau ${days} ngày).`, '📈');
+                        }
+                    } else {
+                        note.stage = 1;
+                        note.isDue = true;
+                        this.triggerToast('💪 Đừng lo! Giấy note đã được dời lại vào ngày mai để ôn kĩ hơn.', '🌱');
+                    }
+                    note.isFlipped = false;
+                },
+
+                startFocusReview() {
+                    this.reviewDeck = this.notes.filter(n => n.isDue && n.stage < 5);
+                    if (this.reviewDeck.length === 0) {
+                        this.reviewDeck = this.notes.slice(0, 3);
+                    }
+                    this.reviewIndex = 0;
+                    this.isReviewFlipped = false;
+                    this.showFocusReviewModal = true;
+                },
+
+                processDeckAction(remembered) {
+                    const cur = this.reviewDeck[this.reviewIndex];
+                    if (cur) {
+                        this.reviewNote(cur, remembered);
+                    }
+                    this.isReviewFlipped = false;
+                    this.reviewIndex++;
+                }
+            }
+        }
+    </script>
+</body>
+</html>

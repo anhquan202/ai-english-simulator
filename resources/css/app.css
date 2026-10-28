@@ -1,0 +1,355 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,600;1,6..72,400;1,6..72,600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+    body {
+        font-family: 'Inter', system-ui, -apple-system, sans-serif;
+        text-rendering: optimizeLegibility;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+        background-color: #F7F8F3;
+        color: #202D27;
+    }
+
+    h1, h2, h3, h4, h5, h6 {
+        font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    }
+}
+
+/* Material Symbols Outlined Icon Standard */
+.material-symbols-outlined {
+    font-family: 'Material Symbols Outlined';
+    font-weight: normal;
+    font-style: normal;
+    font-size: 24px;
+    line-height: 1;
+    letter-spacing: normal;
+    text-transform: none;
+    display: inline-block;
+    white-space: nowrap;
+    word-wrap: normal;
+    direction: ltr;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+    -moz-osx-font-smoothing: grayscale;
+    font-feature-settings: 'liga';
+    vertical-align: middle;
+}
+
+@layer components {
+    /* Khung trang chuẩn */
+    .layout-container {
+        @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 xl:px-12;
+    }
+
+    /* Nhịp điệu giữa các section */
+    .section-spacing {
+        @apply mb-8 md:mb-10 lg:mb-12;
+    }
+
+    /* Tiêu đề section xuống content */
+    .section-header-spacing {
+        @apply mb-4 md:mb-5 lg:mb-6;
+    }
+
+    /* Grid danh sách bài học */
+    .scenario-grid {
+        @apply grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-5 lg:gap-6;
+    }
+
+    /* Thẻ kịch bản */
+    .scenario-card {
+        @apply bg-sage-surface border border-sage-border hover:border-sage-primary rounded-card p-4 lg:p-5 transition-all duration-200 flex flex-col justify-between;
+    }
+
+    /* Hero Spotlight Container */
+    .hero-container {
+        @apply rounded-2xl lg:rounded-hero p-5 md:p-6 lg:p-8 bg-sage-tint border border-sage-border/80;
+    }
+
+    /* ============================================================ */
+    /* BUTTON & TOUCH TARGET DESIGN TOKENS                          */
+    /* ============================================================ */
+    /* Nút Hero / Banner CTA chính (Hero Action Button - Min 56px/64px) */
+    .btn-cta {
+        @apply min-h-cta sm:min-h-cta-lg py-4.5 sm:py-5 px-8 sm:px-10 rounded-2xl bg-sage-primary hover:bg-sage-primary-hover text-white text-base sm:text-lg font-extrabold shadow-soft-lg hover:shadow-xl transition transform hover:-translate-y-0.5 btn-shimmer inline-flex items-center justify-center gap-3 w-full sm:w-auto cursor-pointer;
+    }
+
+    /* Nút bấm hành động chính (Standard Action Button - Min 44px/48px Apple/Google Touch Target) */
+    .btn-primary {
+        @apply min-h-touch md:min-h-touch-lg py-2.5 md:py-3 px-5 md:px-6 bg-sage-primary hover:bg-sage-primary-hover text-white text-sm font-semibold rounded-xl transition duration-150 inline-flex items-center justify-center gap-1.5 md:gap-2 cursor-pointer shadow-soft-sm hover:shadow;
+    }
+
+    /* Nút header / compact (Header & Toolbar Action - Min 40px/44px) */
+    .btn-compact {
+        @apply min-h-touch-md sm:min-h-touch py-2 px-4 rounded-xl bg-sage-primary hover:bg-sage-primary-hover text-white text-xs font-bold inline-flex items-center justify-center gap-1.5 shadow-soft-sm transition hover:shadow btn-shimmer cursor-pointer;
+    }
+
+    /* Nút Icon / Touch Target vuông tròn (Square/Circle Touch Target - Min 44px) */
+    .btn-icon {
+        @apply min-w-touch min-h-touch inline-flex items-center justify-center rounded-full transition cursor-pointer;
+    }
+
+    /* Thẻ lọc danh mục (Filter Pill - Min 36px/40px) */
+    .filter-pill {
+        @apply min-h-touch-sm sm:min-h-touch-md py-1.5 sm:py-2 px-3.5 sm:px-4 rounded-full text-xs sm:text-sm font-medium transition duration-150 inline-flex items-center gap-1.5 cursor-pointer;
+    }
+
+    /* Subtitle & Caption Chuẩn Hóa Typography */
+    .ui-subtitle {
+        @apply text-sm sm:text-base text-pine-subtle font-normal sm:font-medium leading-relaxed;
+    }
+
+    .ui-caption {
+        @apply text-xs text-pine-muted font-medium;
+    }
+
+    /* Ô nhập liệu Form Chuẩn Hóa */
+    .form-control-input {
+        @apply w-full h-input rounded-xl border border-sage-border-light bg-white px-4 text-sm text-pine placeholder-stone-400 focus:border-sage-primary focus:ring-1 focus:ring-sage-primary transition shadow-soft-sm;
+    }
+
+    /* Thẻ Container Chuẩn Hóa */
+    .ui-card {
+        @apply bg-sage-surface rounded-card border border-sage-border p-5 md:p-6 shadow-soft-sm;
+    }
+
+    /* ============================================================ */
+    /* SECTION SPACING: 56px trên mobile, 72px trên desktop        */
+    /* ============================================================ */
+    .section-py {
+        padding-top: 56px;
+        padding-bottom: 56px;
+    }
+    @media (min-width: 1024px) {
+        .section-py {
+            padding-top: 72px;
+            padding-bottom: 72px;
+        }
+    }
+
+    /* ============================================================ */
+    /* SEMANTIC TYPOGRAPHY SCALE (100% Decoupled Color, Nấc Chẵn)  */
+    /* ============================================================ */
+    /* Tier 1: Display / Main */
+    .text-display, .text-main {
+        font-size: 2rem; /* 32px */
+        line-height: 1.2;
+        letter-spacing: -0.025em;
+    }
+    @media (min-width: 640px) {
+        .text-display, .text-main {
+            font-size: 2.5rem; /* 40px */
+            line-height: 1.18;
+        }
+    }
+    @media (min-width: 1024px) {
+        .text-display, .text-main {
+            font-size: 3rem; /* 48px */
+            line-height: 1.15;
+        }
+    }
+
+    /* Tier 2: Heading / Section Title */
+    .text-heading, .text-title {
+        font-size: 1.5rem; /* 24px */
+        line-height: 1.25;
+        letter-spacing: -0.02em;
+    }
+    @media (min-width: 640px) {
+        .text-heading, .text-title {
+            font-size: 2rem; /* 32px */
+            line-height: 1.22;
+        }
+    }
+    @media (min-width: 1024px) {
+        .text-heading, .text-title {
+            font-size: 2.25rem; /* 36px */
+            line-height: 1.2;
+        }
+    }
+
+    /* Tier 3: Subheading / Card Title */
+    .text-subheading, .text-title-sm {
+        font-size: 1.125rem; /* 18px */
+        line-height: 1.4;
+    }
+    @media (min-width: 640px) {
+        .text-subheading, .text-title-sm {
+            font-size: 1.25rem; /* 20px */
+            line-height: 1.35;
+        }
+    }
+
+    /* Tier 4: Lead / Subtitle (Chuẩn hóa 14px mobile -> 16px desktop) */
+    .text-lead, .text-sub {
+        font-size: 0.875rem; /* 14px */
+        line-height: 1.55;
+    }
+    @media (min-width: 640px) {
+        .text-lead, .text-sub {
+            font-size: 1rem; /* 16px */
+            line-height: 1.6;
+        }
+    }
+
+    /* Tier 5: Body (Dùng cho p, span, textarea, input) */
+    .text-body {
+        font-size: 0.875rem; /* 14px */
+        line-height: 1.5;
+    }
+    @media (min-width: 640px) {
+        .text-body {
+            font-size: 1rem; /* 16px */
+            line-height: 1.55;
+        }
+    }
+
+    /* Tier 6: Caption / Hint (Ngoại lệ 13px duy nhất) */
+    .text-caption, .text-hint {
+        font-size: 0.8125rem; /* 13px */
+        line-height: 1.45;
+    }
+
+    /* Serif Font Utility for Editorial Accents */
+    .font-serif {
+        font-family: 'Newsreader', Georgia, Cambria, serif;
+    }
+
+    /* Top Reading Progress Bar */
+    #scroll-progress {
+        position: fixed;
+        top: 0;
+        left: 0;
+        height: 3px;
+        background: linear-gradient(90deg, #267052, #10B981, #BA583C);
+        width: 0%;
+        z-index: 100;
+        transition: width 0.08s ease-out;
+    }
+
+    /* Floating Chapter HUD Indicator */
+    .nav-dot-active {
+        width: 28px !important;
+        background-color: #267052 !important;
+        box-shadow: 0 0 10px rgba(38, 112, 82, 0.5);
+    }
+
+    /* Shimmer Button Sweep */
+    .btn-shimmer {
+        position: relative;
+        overflow: hidden;
+    }
+    .btn-shimmer::after {
+        content: '';
+        position: absolute;
+        top: -50%;
+        left: -50%;
+        width: 200%;
+        height: 200%;
+        background: linear-gradient(60deg, transparent 40%, rgba(255, 255, 255, 0.22) 50%, transparent 60%);
+        transform: rotate(25deg);
+        animation: shimmerEffect 4s infinite;
+    }
+    @keyframes shimmerEffect {
+        0% { transform: translateX(-100%) rotate(25deg); }
+        35%, 100% { transform: translateX(100%) rotate(25deg); }
+    }
+
+    /* Halo Ring Animation */
+    @keyframes haloPulse {
+        0% { transform: scale(0.95); opacity: 0.8; }
+        50% { transform: scale(1.2); opacity: 0.3; }
+        100% { transform: scale(1.45); opacity: 0; }
+    }
+    .animate-halo-ring {
+        animation: haloPulse 2.4s cubic-bezier(0, 0, 0.2, 1) infinite;
+    }
+
+    /* Soundwaves in Simulator */
+    @keyframes soundwaveAnim {
+        0%, 100% { height: 6px; }
+        50% { height: 24px; }
+    }
+    .animate-sound-1 { animation: soundwaveAnim 0.9s ease-in-out infinite 0.1s; }
+    .animate-sound-2 { animation: soundwaveAnim 1.1s ease-in-out infinite 0.3s; }
+    .animate-sound-3 { animation: soundwaveAnim 0.8s ease-in-out infinite 0.2s; }
+    .animate-sound-4 { animation: soundwaveAnim 1.2s ease-in-out infinite 0.4s; }
+    .animate-sound-5 { animation: soundwaveAnim 1.0s ease-in-out infinite 0.15s; }
+
+    /* Lenis Smooth Momentum Scroll */
+    html.lenis, html.lenis body {
+        height: auto;
+    }
+    .lenis.lenis-smooth {
+        scroll-behavior: auto !important;
+    }
+}
+
+/* Custom Scrollbar for Drawer & Dialogues */
+.custom-scrollbar::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+}
+.custom-scrollbar::-webkit-scrollbar-track {
+    background: transparent;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb {
+    background: rgba(108, 118, 111, 0.35);
+    border-radius: 9999px;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+    background: rgba(108, 118, 111, 0.55);
+}
+
+/* Smooth Transitions & Alpine cloak */
+[x-cloak] {
+    display: none !important;
+}
+
+/* Sound Meter Bar Pulse */
+@keyframes soundbarPulse {
+    0%, 100% { height: 12%; }
+    50% { height: 85%; }
+}
+
+.animate-soundbar {
+    animation: soundbarPulse 1.2s ease-in-out infinite;
+}
+
+/* Animation Fade-in từ trên xuống (Landing Page Hero & Sections) */
+@keyframes fadeInDown {
+    0% {
+        opacity: 0;
+        transform: translateY(-24px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.animate-fade-in-down {
+    animation: fadeInDown 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.animation-delay-150 {
+    animation-delay: 150ms;
+}
+
+.animation-delay-300 {
+    animation-delay: 300ms;
+}
+
+.animation-delay-450 {
+    animation-delay: 450ms;
+}
+
+.animation-delay-600 {
+    animation-delay: 600ms;
+}
